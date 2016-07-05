@@ -1,6 +1,6 @@
 {
-  "presets": ["es2015"],
+  "presets": ["es2017"],
   "plugins": [
-    "transform-class-properties"
+    "transform-class-properties", "transform-runtime"
   ]
 }
