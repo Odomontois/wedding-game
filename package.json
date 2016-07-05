@@ -1,0 +1,31 @@
+{
+  "name": "wedding-game",
+  "version": "1.0.0",
+  "description": "Katya & Oleg Wedding Game",
+  "main": "bundle.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Odomontois/wedding-game.git"
+  },
+  "keywords": [
+    "wedding",
+    "phaser",
+    "board-game"
+  ],
+  "author": "Odomontois",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Odomontois/wedding-game/issues"
+  },
+  "homepage": "https://github.com/Odomontois/wedding-game#readme",
+  "devDependencies": {
+    "babel-loader": "^6.2.4",
+    "babel-plugin-transform-class-properties": "^6.10.2",
+    "babel-preset-es2015": "^6.9.0",
+    "webpack": "^1.13.1",
+    "webpack-dev-server": "^1.14.1"
+  }
+}
