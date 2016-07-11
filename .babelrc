@@ -1,6 +1,8 @@
 {
   "presets": ["es2017"],
   "plugins": [
-    "transform-class-properties", "transform-runtime"
+    "transform-class-properties",
+    "transform-runtime",
+    "babel-plugin-transform-decorators-legacy"
   ]
 }

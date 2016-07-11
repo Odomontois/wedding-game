@@ -1,28 +1,42 @@
+import stages from "data/stages.json"
+import Masks  from "masks.js"
+
+@Masks
 export default class Board extends Phaser.State{
   preload () {
     const {game} = this
     game.load.image('selfie', 'photos/selfie.jpg')
     game.load.image('bg', "images/background.jpg")
-    game.load.json('stages', 'data/stages.json')
-    const stages = game.cache.getJSON('stages')
     for ([name, {photo}] of Object.entries(stages)){
-      game.load.image(`stage_{name}`, `photos/{photo}`)
+      if(photo){
+        game.load.image(`stage_${ name }`, `photos/${ photo }`)
+      }
     }
   }
 
-  drawStage({x,y,photo,crop}){
-    const pic = this.game.add.sprite(x,y, `stage_{name}`)
+  drawStage(name, {at: [x,y] ,photo, crop, mask, scale}){
+    const pic = this.game.add.sprite(x,y, `stage_${name}`)
+    if (crop) {
+      pic.crop(new Phaser.Rectangle(...crop))
+    }
+    if(scale) {
+      [x,y] = scale
+      pic.scale = {x,y}
+    }
+    if(mask) {
+      this.masks[mask](pic)
+    }
+
   }
 
   create() {
       const {game} = this
       game.add.sprite(0,0,"bg")
 
-      const stages = game.cache.getJSON('stages');
       console.log(stages);
 
       for(const [name, stage] of Object.entries(stages)){
-        console.log(name, stage)
+        this.drawStage(name, stage)
       }
   }
 

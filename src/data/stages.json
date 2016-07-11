@@ -1,0 +1,14 @@
+{
+  "first": {
+    "at" : [100, 300],
+    "photo":"fish.jpg",
+    "crop": [150, 250, 250, 250],
+    "mask" : "circle"
+  },
+  "second": {
+    "at" : [300, 100],
+    "photo": "samovar.jpg",
+    "crop": [340, 420, 250, 250],
+    "mask" : "circle"
+  }
+}
