@@ -53,7 +53,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.onload = () => {
-	  return new _game2.default();
+	  $.getJSON("/data/stages.json", stages => new _game2.default(stages));
 	};
 
 /***/ },
@@ -74,10 +74,11 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	let Game = class Game extends Phaser.Game {
-	    constructor() {
+	    constructor(stages) {
 	        super(1200, 900, Phaser.AUTO, '', null);
 	        this.state.add('Board', _Board2.default, false);
 	        this.state.start('Board');
+	        this.stages = stages;
 	    }
 	};
 	exports.default = Game;
@@ -86,7 +87,7 @@
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -107,11 +108,7 @@
 
 	var _class;
 
-	var _stages = __webpack_require__(68);
-
-	var _stages2 = _interopRequireDefault(_stages);
-
-	var _masks = __webpack_require__(69);
+	var _masks = __webpack_require__(68);
 
 	var _masks2 = _interopRequireDefault(_masks);
 
@@ -121,17 +118,18 @@
 	  preload() {
 	    const game = this.game;
 
-	    game.load.image('selfie', 'photos/selfie.jpg');
+	    game.load.image('selfie', 'data/photos/selfie.jpg');
 	    game.load.image('bg', "images/background.jpg");
-	    for (var _ref of (0, _entries2.default)(_stages2.default)) {
+	    for (var _ref of (0, _entries2.default)(game.stages)) {
 	      var _ref2 = (0, _slicedToArray3.default)(_ref, 2);
 
 	      var name = _ref2[0];
 	      var photo = _ref2[1].photo;
 
 	      if (photo) {
-	        game.load.image(`stage_${ name }`, `photos/${ photo }`);
+	        game.load.image(`stage_${ name }`, `data/photos/${ photo }`);
 	      }
+	      game.load.text(`text_${ name }`, `data/texts/${ name }.txt`);
 	    }
 	  }
 
@@ -173,13 +171,15 @@
 	    game.add.sprite(0, 0, "bg");
 	    this.stages = {};
 
-	    for (const _ref4 of (0, _entries2.default)(_stages2.default)) {
+	    for (const _ref4 of (0, _entries2.default)(game.stages)) {
 	      var _ref5 = (0, _slicedToArray3.default)(_ref4, 2);
 
 	      const name = _ref5[0];
 	      const stage = _ref5[1];
 
-	      this.stages[name] = this.drawStage(name, stage);
+	      let sprite = this.drawStage(name, stage);
+	      this.stages[name] = sprite;
+	      sprite.name = name;
 	    }
 	  }
 
@@ -197,17 +197,25 @@
 	    }
 	  }
 
+	  makeText(sprite) {
+	    const game = this.game;
+
+	    const text = game.cache.getText(`text_${ sprite.name }`);
+	    sprite.text = game.add.text(0, 0, text);
+	  }
+
 	  chooseStage(sprite) {
 	    console.log(sprite);
 	    let visible = false;
 	    if (sprite === this.chosen) {
 	      this.chosen = null;
 	      visible = true;
+	      sprite.text.destroy();
 	      sprite.maskHandler.shrink().onComplete.add(() => this.showUnchosen(true));
 	    } else {
 	      this.chosen = sprite;
-	      sprite.maskHandler.enlarge();
 	      this.showUnchosen(false);
+	      sprite.maskHandler.enlarge().onComplete.add(() => this.makeText(sprite));
 	    }
 	  }
 	}) || _class;
@@ -1222,41 +1230,6 @@
 
 /***/ },
 /* 68 */
-/***/ function(module, exports) {
-
-	module.exports = {
-		"first": {
-			"at": [
-				100,
-				300
-			],
-			"photo": "fish.jpg",
-			"crop": [
-				150,
-				250,
-				250,
-				250
-			],
-			"mask": "circle"
-		},
-		"second": {
-			"at": [
-				300,
-				100
-			],
-			"photo": "samovar.jpg",
-			"crop": [
-				340,
-				420,
-				250,
-				250
-			],
-			"mask": "circle"
-		}
-	};
-
-/***/ },
-/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1273,7 +1246,7 @@
 
 	var _entries2 = _interopRequireDefault(_entries);
 
-	var _assign = __webpack_require__(70);
+	var _assign = __webpack_require__(69);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
@@ -1368,35 +1341,35 @@
 	exports.default = Masks;
 
 /***/ },
+/* 69 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(70), __esModule: true };
+
+/***/ },
 /* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(71), __esModule: true };
+	__webpack_require__(71);
+	module.exports = __webpack_require__(8).Object.assign;
 
 /***/ },
 /* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(72);
-	module.exports = __webpack_require__(8).Object.assign;
+	// 19.1.3.1 Object.assign(target, source)
+	var $export = __webpack_require__(6);
+
+	$export($export.S + $export.F, 'Object', {assign: __webpack_require__(72)});
 
 /***/ },
 /* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// 19.1.3.1 Object.assign(target, source)
-	var $export = __webpack_require__(6);
-
-	$export($export.S + $export.F, 'Object', {assign: __webpack_require__(73)});
-
-/***/ },
-/* 73 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 	// 19.1.2.1 Object.assign(target, source, ...)
 	var getKeys  = __webpack_require__(22)
-	  , gOPS     = __webpack_require__(74)
+	  , gOPS     = __webpack_require__(73)
 	  , pIE      = __webpack_require__(37)
 	  , toObject = __webpack_require__(56)
 	  , IObject  = __webpack_require__(26)
@@ -1428,7 +1401,7 @@
 	} : $assign;
 
 /***/ },
-/* 74 */
+/* 73 */
 /***/ function(module, exports) {
 
 	exports.f = Object.getOwnPropertySymbols;
