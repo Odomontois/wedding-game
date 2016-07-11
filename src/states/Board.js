@@ -26,7 +26,9 @@ export default class Board extends Phaser.State{
     if(mask) {
       this.masks[mask](pic)
     }
+    pic.inputEnabled = true;
 
+    pic.events.onInputDown.add(this.chooseStage, this);
   }
 
   create() {
@@ -40,6 +42,7 @@ export default class Board extends Phaser.State{
       }
   }
 
-  render(){
+  chooseStage(sprite) {
+    console.log(sprite)
   }
 }
