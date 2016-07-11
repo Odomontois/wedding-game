@@ -17,8 +17,8 @@ var config = {
         modulesDirectories: ['node_modules', jsPath]
     },
     output: {
-        path: path.resolve(__dirname),
-        publicPath: '',
+        path: path.resolve(__dirname, "assets"),
+        publicPath: '/assets',
         filename: 'bundle.js',
         pathInfo: true
     },

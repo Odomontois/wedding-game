@@ -29,20 +29,43 @@ export default class Board extends Phaser.State{
     pic.inputEnabled = true;
 
     pic.events.onInputDown.add(this.chooseStage, this);
+
+    return pic
   }
 
   create() {
       const {game} = this
       game.add.sprite(0,0,"bg")
-
-      console.log(stages);
+      this.stages = {}
 
       for(const [name, stage] of Object.entries(stages)){
-        this.drawStage(name, stage)
+        this.stages[name] = this.drawStage(name, stage)
       }
+  }
+
+  update(){
+    for(let stage of Object.values(this.stages)){
+      stage.updateCrop()
+    }
+  }
+
+  showUnchosen(visible = false){
+    for(let stage of Object.values(this.stages)){
+      if(stage !== this.chosen) stage.visible = visible;
+    }
   }
 
   chooseStage(sprite) {
     console.log(sprite)
+    let visible = false
+    if(sprite === this.chosen) {
+      this.chosen = null
+      visible = true
+      sprite.maskHandler.shrink().onComplete.add(() => this.showUnchosen(true))
+    } else {
+      this.chosen = sprite
+      sprite.maskHandler.enlarge()
+      this.showUnchosen(false)
+    }
   }
 }
