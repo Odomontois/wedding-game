@@ -29,7 +29,15 @@ var config = {
             {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
-                loader: 'babel'
+                loader: 'babel',
+                query:{
+                  "presets": ["es2017"],
+                  "plugins": [
+                    "transform-class-properties",
+                    "transform-runtime",
+                    "babel-plugin-transform-decorators-legacy"
+                  ]
+                }
             },
             {
                 test: /.json$/,
@@ -39,7 +47,8 @@ var config = {
         ]
     },
     plugins: [
-        new webpack.NoErrorsPlugin()].concat(
+        new webpack.NoErrorsPlugin()]
+        .concat(
         PROD ? [
             //new webpack.optimize.CommonsChunkPlugin('common', 'common.js'),
             new webpack.optimize.UglifyJsPlugin({

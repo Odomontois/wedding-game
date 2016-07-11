@@ -1,5 +1,5 @@
-  import Game from "game"
+import Game from "game"
 
 window.onload = () => {
-  new Game()
+  return new Game()
 };
