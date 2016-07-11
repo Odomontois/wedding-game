@@ -4,7 +4,7 @@ import Masks  from "masks.js"
 export default class Board extends Phaser.State{
   preload () {
     const {game} = this
-    game.load.image('selfie', 'photos/selfie.jpg')
+    game.load.image('selfie', 'data/photos/selfie.jpg')
     game.load.image('bg', "images/background.jpg")
     for ([name, {photo}] of Object.entries(game.stages)){
       if(photo){
