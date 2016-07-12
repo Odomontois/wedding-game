@@ -1,5 +1,8 @@
 import Game from "game"
 
 window.onload = () => {
-  $.getJSON("/data/stages.json", (stages) => new Game(stages))
+  $.when(
+      $.getJSON("/data/stages.json"),
+      $.getJSON("/data/config.json")
+  ).done(([stages], [config]) =>  new Game(stages, config))
 };
