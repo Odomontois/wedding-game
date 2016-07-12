@@ -59,8 +59,22 @@ export default class Board extends Phaser.State{
 
   makeText(sprite){
     const {game} = this
-    const text = game.cache.getText(`text_${sprite.name}`)
-    sprite.text = game.add.text(0,0,text)
+    const content = game.cache.getText(`text_${sprite.name}`)
+    const {centerX, centerY, x, y, width, height} = this.game.world
+    const text = game.add.text(0, 0, content)
+    text.align = 'center'
+    text.boundsAlignH = 'center'
+    text.boundsAlignV = 'center'
+    text.setTextBounds(x,y,width, height)
+
+
+    text.fontSize = 30
+    text.fill = '#ffffff'
+
+    text.stroke = '#000000'
+    text.strokeThickness = 10
+
+    sprite.text = text
   }
 
   chooseStage(sprite) {
