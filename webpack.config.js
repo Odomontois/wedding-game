@@ -9,7 +9,7 @@ var PROD = (process.env.NODE_ENV === 'production');
 
 var config = {
     target: 'web',
-    entry:  path.join(srcPath, 'app.js')  ,
+    entry:  path.join(srcPath, 'app.ls')  ,
     resolve: {
         alias: {},
         root: srcPath,
@@ -26,18 +26,23 @@ var config = {
     module: {
         noParse: [],
         loaders: [
+            // {
+            //     test: /\.jsx?$/,
+            //     exclude: /node_modules/,
+            //     loader: 'babel',
+            //     query:{
+            //       "presets": ["es2017"],
+            //       "plugins": [
+            //         "transform-class-properties",
+            //         "transform-runtime",
+            //         "babel-plugin-transform-decorators-legacy"
+            //       ]
+            //     }
+            // },
             {
-                test: /\.jsx?$/,
-                exclude: /node_modules/,
-                loader: 'babel',
-                query:{
-                  "presets": ["es2017"],
-                  "plugins": [
-                    "transform-class-properties",
-                    "transform-runtime",
-                    "babel-plugin-transform-decorators-legacy"
-                  ]
-                }
+              test: /.ls$/,
+              exclude: /node_modules/,
+              loader: 'livescript'
             },
             {
                 test: /.json$/,
