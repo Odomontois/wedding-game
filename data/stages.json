@@ -5,7 +5,8 @@
     "photo":"fish.jpg",
     "crop": [150, 250, 250, 250],
     "mask" : "circle",
-    "scale" : [0.7, 0.7]
+    "scale" : [0.7, 0.7],
+    "text": "fish.txt"
   },
   "samovar":{
     "index" : 3,
@@ -13,7 +14,8 @@
     "photo": "samovar.jpg",
     "crop": [370, 420, 250, 250],
     "mask" : "circle",
-    "scale" : [0.7, 0.7]
+    "scale" : [0.7, 0.7],
+    "text" : "samovar.txt"
   },
   "cap": {
     "index" : 2,
@@ -27,7 +29,11 @@
     "index" : 4,
     "at": [650, 300],
     "photo": "play-button.png",
-    "scale" : [0.85],
-    "video": "druz.mp4"
+    "scale" : [0.2, 0.2],
+    "video": {
+      "name": "druz.mp4",
+      "scaleX": 3.3,
+      "scaleY" : 1.1
+      }
   }
 }
