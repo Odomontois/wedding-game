@@ -10,7 +10,7 @@
   },
   "samovar":{
     "index" : 3,
-    "at" : [300, 100],
+    "at" : [200, 100],
     "photo": "samovar.jpg",
     "crop": [370, 420, 250, 250],
     "mask" : "circle",
@@ -19,7 +19,7 @@
   },
   "cap": {
     "index" : 2,
-    "at" : [550, 100],
+    "at" : [400, 100],
     "photo": "cap.jpg",
     "mask": "circle",
     "crop": [200, 350, 175, 175],
@@ -27,7 +27,7 @@
   },
   "video": {
     "index" : 4,
-    "at": [650, 300],
+    "at": [600, 100],
     "photo": "play-button.png",
     "scale" : [0.2, 0.2],
     "video": {
@@ -35,5 +35,12 @@
       "scaleX": 3,
       "scaleY" : 3
       }
+  },
+  "100k1":{
+    "index": 5,
+    "at": [700, 300],
+    "photo": "100k1.png",
+    "scale": [0.4, 0.4],
+    "download": "100k1_win.pptx"
   }
 }
