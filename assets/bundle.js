@@ -44,1431 +44,1699 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-
-	var _slicedToArray2 = __webpack_require__(1);
-
-	var _slicedToArray3 = _interopRequireDefault(_slicedToArray2);
-
-	var _game = __webpack_require__(58);
-
-	var _game2 = _interopRequireDefault(_game);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	window.onload = () => {
-	    $.when($.getJSON("/data/stages.json"), $.getJSON("/data/config.json")).done((_ref, _ref2) => {
-	        var _ref4 = (0, _slicedToArray3.default)(_ref, 1);
-
-	        let stages = _ref4[0];
-
-	        var _ref3 = (0, _slicedToArray3.default)(_ref2, 1);
-
-	        let config = _ref3[0];
-	        return new _game2.default(stages, config);
-	    });
+	var Game;
+	Game = __webpack_require__(1).Game;
+	window.onload = function(){
+	  return $.when($.getJSON("data/stages.json"), $.getJSON("data/config.json")).done(function(arg$, arg1$){
+	    var stages, config;
+	    stages = arg$[0];
+	    config = arg1$[0];
+	    return new Game(stages, config);
+	  }).fail(function(def, err){
+	    console.log(err);
+	    return console.log(def);
+	  });
 	};
+	//# sourceMappingURL=c:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\app.ls.map
+
 
 /***/ },
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-
-	exports.__esModule = true;
-
-	var _isIterable2 = __webpack_require__(2);
-
-	var _isIterable3 = _interopRequireDefault(_isIterable2);
-
-	var _getIterator2 = __webpack_require__(54);
-
-	var _getIterator3 = _interopRequireDefault(_getIterator2);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = function () {
-	  function sliceIterator(arr, i) {
-	    var _arr = [];
-	    var _n = true;
-	    var _d = false;
-	    var _e = undefined;
-
-	    try {
-	      for (var _i = (0, _getIterator3.default)(arr), _s; !(_n = (_s = _i.next()).done); _n = true) {
-	        _arr.push(_s.value);
-
-	        if (i && _arr.length === i) break;
-	      }
-	    } catch (err) {
-	      _d = true;
-	      _e = err;
-	    } finally {
-	      try {
-	        if (!_n && _i["return"]) _i["return"]();
-	      } finally {
-	        if (_d) throw _e;
-	      }
-	    }
-
-	    return _arr;
+	var Board, sortBy, Game, out$ = typeof exports != 'undefined' && exports || this;
+	Board = __webpack_require__(2).Board;
+	sortBy = __webpack_require__(4).sortBy;
+	out$.Game = Game = (function(superclass){
+	  var prototype = extend$((import$(Game, superclass).displayName = 'Game', Game), superclass).prototype, constructor = Game;
+	  function Game(stages, cfg){
+	    var width, height;
+	    this.stages = stages;
+	    this.cfg = cfg;
+	    width = cfg.width, height = cfg.height;
+	    Game.superclass.call(this, width, height, Phaser.AUTO, '', null);
+	    this.state.add('Board', Board, false);
+	    this.state.start('Board');
 	  }
+	  return Game;
+	}(Phaser.Game));
+	function extend$(sub, sup){
+	  function fun(){} fun.prototype = (sub.superclass = sup).prototype;
+	  (sub.prototype = new fun).constructor = sub;
+	  if (typeof sup.extended == 'function') sup.extended(sub);
+	  return sub;
+	}
+	function import$(obj, src){
+	  var own = {}.hasOwnProperty;
+	  for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+	  return obj;
+	}
+	//# sourceMappingURL=C:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\game.ls.map
 
-	  return function (arr, i) {
-	    if (Array.isArray(arr)) {
-	      return arr;
-	    } else if ((0, _isIterable3.default)(Object(arr))) {
-	      return sliceIterator(arr, i);
-	    } else {
-	      throw new TypeError("Invalid attempt to destructure non-iterable instance");
-	    }
-	  };
-	}();
 
 /***/ },
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(3), __esModule: true };
+	var getMasks, ref$, sortBy, objToPairs, Text, Board, out$ = typeof exports != 'undefined' && exports || this;
+	getMasks = __webpack_require__(3).getMasks;
+	ref$ = __webpack_require__(4), sortBy = ref$.sortBy, objToPairs = ref$.objToPairs;
+	Text = __webpack_require__(10).Text;
+	out$.Board = Board = (function(superclass){
+	  var prototype = extend$((import$(Board, superclass).displayName = 'Board', Board), superclass).prototype, constructor = Board;
+	  importAll$(prototype, arguments[1]);
+	  Board.prototype.preload = function(){
+	    var game, name, ref$, photo, results$ = [];
+	    game = this.game;
+	    this.masks = getMasks(this);
+	    game.load.image('bg', game.cfg.background);
+	    for (name in ref$ = game.stages) {
+	      photo = ref$[name].photo;
+	      if (photo != null) {
+	        game.load.image("stage_" + name, "data/photos/" + photo);
+	      }
+	      results$.push(game.load.text("text_" + name, "data/texts/" + name + ".txt"));
+	    }
+	    return results$;
+	  };
+	  Board.prototype.drawStage = function(name, arg$){
+	    var ref$, x, y, photo, crop, mask, scale, pic;
+	    ref$ = arg$.at, x = ref$[0], y = ref$[1], photo = arg$.photo, crop = arg$.crop, mask = arg$.mask, scale = arg$.scale;
+	    pic = this.game.add.sprite(x, y, "stage_" + name);
+	    if (crop != null) {
+	      pic.crop((function(func, args, ctor) {
+	        ctor.prototype = func.prototype;
+	        var child = new ctor, result = func.apply(child, args), t;
+	        return (t = typeof result)  == "object" || t == "function" ? result || child : child;
+	  })(Phaser.Rectangle, crop, function(){}));
+	    }
+	    if (scale != null) {
+	      x = scale[0], y = scale[1];
+	      pic.scale = {
+	        x: x,
+	        y: y
+	      };
+	    }
+	    if (mask != null) {
+	      this.masks[mask](pic);
+	    }
+	    pic.inputEnabled = true;
+	    pic.events.onInputDown.add(this.chooseStage, this);
+	    return pic;
+	  };
+	  Board.prototype.create = function(){
+	    var ordStages, i$, len$, ref$, name, stage, sprite, this$ = this;
+	    this.game.add.sprite(0, 0, "bg");
+	    this.stages = {};
+	    ordStages = sortBy(function(it){
+	      return it[1].index;
+	    }, objToPairs(this.game.stages));
+	    for (i$ = 0, len$ = ordStages.length; i$ < len$; ++i$) {
+	      ref$ = ordStages[i$], name = ref$[0], stage = ref$[1];
+	      sprite = this.drawStage(name, stage);
+	      this.stages[name] = sprite;
+	      sprite.name = name;
+	      stage.type = stage.video != null ? (sprite.video = stage.video, "video") : "text";
+	    }
+	  };
+	  Board.prototype.update = function(){
+	    var _, ref$, stage, results$ = [];
+	    for (_ in ref$ = this.stages) {
+	      stage = ref$[_];
+	      results$.push(stage.updateCrop());
+	    }
+	    return results$;
+	  };
+	  Board.prototype.showUnchosen = function(visible){
+	    var _, ref$, stage, results$ = [];
+	    visible == null && (visible = false);
+	    for (_ in ref$ = this.stages) {
+	      stage = ref$[_];
+	      if (stage !== this.chosen) {
+	        results$.push(stage.visible = visible);
+	      }
+	    }
+	    return results$;
+	  };
+	  Board.prototype.chooseStage = function(sprite){
+	    console.log(sprite);
+	    switch (stage.type) {
+	    case "text":
+	      return this.chooseText(sprite);
+	    case "video":
+	      return this.chooseVideo(sprite);
+	    }
+	  };
+	  Board.prototype.chooseVideo = function(sprite){
+	    return s;
+	  };
+	  Board.prototype.chooseText = function(sprite){
+	    var visible, this$ = this;
+	    if (sprite === this.chosen) {
+	      this.chosen = null;
+	      visible = true;
+	      sprite.text.destroy();
+	      return sprite.maskHandler.shrink().onComplete.add(function(){
+	        return this$.showUnchosen(true);
+	      });
+	    } else {
+	      this.chosen = sprite;
+	      this.showUnchosen(false);
+	      return sprite.maskHandler.enlarge().onComplete.add(function(){
+	        return this$.makeText(sprite);
+	      });
+	    }
+	  };
+	  function Board(){
+	    Board.superclass.apply(this, arguments);
+	  }
+	  return Board;
+	}(Phaser.State, Text));
+	function extend$(sub, sup){
+	  function fun(){} fun.prototype = (sub.superclass = sup).prototype;
+	  (sub.prototype = new fun).constructor = sub;
+	  if (typeof sup.extended == 'function') sup.extended(sub);
+	  return sub;
+	}
+	function import$(obj, src){
+	  var own = {}.hasOwnProperty;
+	  for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+	  return obj;
+	}
+	function importAll$(obj, src){
+	  for (var key in src) obj[key] = src[key];
+	  return obj;
+	}
+	//# sourceMappingURL=C:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\board.ls.map
+
 
 /***/ },
 /* 3 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	__webpack_require__(4);
-	__webpack_require__(50);
-	module.exports = __webpack_require__(52);
+	var MaskImpl, circle, maskImpls, maskMaker, getMasks, slice$ = [].slice, out$ = typeof exports != 'undefined' && exports || this;
+	MaskImpl = (function(){
+	  MaskImpl.displayName = 'MaskImpl';
+	  var prototype = MaskImpl.prototype, constructor = MaskImpl;
+	  function MaskImpl(state, sprite){
+	    var x, y, w, h;
+	    this.state = state;
+	    this.sprite = sprite;
+	    sprite.maskHandler = this;
+	    x = sprite.x, y = sprite.y, w = sprite.width, h = sprite.height;
+	    this.pos = {
+	      x: x,
+	      y: y,
+	      w: w,
+	      h: h
+	    };
+	    this.crop = import$({}, sprite.cropRect);
+	    this.mask = this.makeMask();
+	    this.scale = import$({}, this.sprite.scale);
+	    this.sprite.mask = this.mask;
+	  }
+	  Object.defineProperty(MaskImpl.prototype, 'game', {
+	    get: function(){
+	      return this.state.game;
+	    },
+	    configurable: true,
+	    enumerable: true
+	  });
+	  MaskImpl.prototype.tween = function(obj, to, start){
+	    var ref$;
+	    return (ref$ = this.game.add.tween(obj)).to.apply(ref$, [to].concat(slice$.call(this.tweenParams(start))));
+	  };
+	  MaskImpl.prototype.enlarge = function(start){
+	    var ref$, width, height, tween, this$ = this;
+	    start == null && (start = true);
+	    console.log(this.sprite._crop);
+	    ref$ = this.game, width = ref$.width, height = ref$.height;
+	    this.sprite.mask = null;
+	    this.mask.visible = false;
+	    tween = this.tween(this.sprite.cropRect, {
+	      x: 0,
+	      y: 0,
+	      width: width,
+	      height: height
+	    }, start);
+	    tween.onStart.add(function(){
+	      return this$.tween(this$.sprite, {
+	        x: 0,
+	        y: 0
+	      }, start);
+	    });
+	    tween.onStart.add(function(){
+	      return this$.tween(this$.sprite.scale, {
+	        x: 1,
+	        y: 1
+	      }, start);
+	    });
+	    return tween;
+	  };
+	  MaskImpl.prototype.shrink = function(start){
+	    var rest, ref$, x, y, w, h, tween, this$ = this;
+	    start == null && (start = true);
+	    rest = [1000, "Linear", true];
+	    ref$ = this.pos, x = ref$.x, y = ref$.y, w = ref$.w, h = ref$.h;
+	    tween = this.tween(this.sprite, {
+	      x: x,
+	      y: y
+	    }, start);
+	    tween.onStart.add(function(){
+	      return this$.tween(this$.sprite.cropRect, this$.crop, start);
+	    });
+	    tween.onStart.add(function(){
+	      return this$.tween(this$.sprite.scale, this$.scale, start);
+	    });
+	    tween.onComplete.add(function(){
+	      this$.sprite.mask = this$.mask;
+	      return this$.mask.visible = true;
+	    });
+	    return tween;
+	  };
+	  MaskImpl.prototype.tweenParams = function(autoStart){
+	    return [1000, "Linear", autoStart];
+	  };
+	  return MaskImpl;
+	}());
+	circle = (function(superclass){
+	  var prototype = extend$((import$(circle, superclass).displayName = 'circle', circle), superclass).prototype, constructor = circle;
+	  circle.prototype.makeMask = function(){
+	    var mask, ref$, x, y, width, height, scale, w, h;
+	    mask = this.game.add.graphics(0, 0);
+	    ref$ = this.sprite, x = ref$.x, y = ref$.y, width = ref$.width, height = ref$.height, scale = ref$.scale;
+	    w = width * scale.x;
+	    h = height * scale.y;
+	    mask.beginFill(0xffffff);
+	    this.ellipse = mask.drawEllipse(x + w / 2, y + h / 2, w / 2, h / 2);
+	    return mask;
+	  };
+	  function circle(){
+	    circle.superclass.apply(this, arguments);
+	  }
+	  return circle;
+	}(MaskImpl));
+	maskImpls = {
+	  circle: circle
+	};
+	maskMaker = curry$(function(state, maker, sprite){
+	  return new maker(state, sprite);
+	});
+	out$.getMasks = getMasks = function(state){
+	  var name, ref$, maker, resultObj$ = {};
+	  for (name in ref$ = maskImpls) {
+	    maker = ref$[name];
+	    resultObj$[name] = maskMaker(state, maker);
+	  }
+	  return resultObj$;
+	};
+	function import$(obj, src){
+	  var own = {}.hasOwnProperty;
+	  for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+	  return obj;
+	}
+	function extend$(sub, sup){
+	  function fun(){} fun.prototype = (sub.superclass = sup).prototype;
+	  (sub.prototype = new fun).constructor = sub;
+	  if (typeof sup.extended == 'function') sup.extended(sub);
+	  return sub;
+	}
+	function curry$(f, bound){
+	  var context,
+	  _curry = function(args) {
+	    return f.length > 1 ? function(){
+	      var params = args ? args.concat() : [];
+	      context = bound ? context || this : this;
+	      return params.push.apply(params, arguments) <
+	          f.length && arguments.length ?
+	        _curry.call(context, params) : f.apply(context, params);
+	    } : f;
+	  };
+	  return _curry();
+	}
+	//# sourceMappingURL=C:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\masks.ls.map
+
 
 /***/ },
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(5);
-	var global        = __webpack_require__(16)
-	  , hide          = __webpack_require__(20)
-	  , Iterators     = __webpack_require__(8)
-	  , TO_STRING_TAG = __webpack_require__(47)('toStringTag');
-
-	for(var collections = ['NodeList', 'DOMTokenList', 'MediaList', 'StyleSheetList', 'CSSRuleList'], i = 0; i < 5; i++){
-	  var NAME       = collections[i]
-	    , Collection = global[NAME]
-	    , proto      = Collection && Collection.prototype;
-	  if(proto && !proto[TO_STRING_TAG])hide(proto, TO_STRING_TAG, NAME);
-	  Iterators[NAME] = Iterators.Array;
+	// Generated by LiveScript 1.4.0
+	var Func, List, Obj, Str, Num, id, isType, replicate, prelude, toString$ = {}.toString;
+	Func = __webpack_require__(5);
+	List = __webpack_require__(6);
+	Obj = __webpack_require__(7);
+	Str = __webpack_require__(8);
+	Num = __webpack_require__(9);
+	id = function(x){
+	  return x;
+	};
+	isType = curry$(function(type, x){
+	  return toString$.call(x).slice(8, -1) === type;
+	});
+	replicate = curry$(function(n, x){
+	  var i$, results$ = [];
+	  for (i$ = 0; i$ < n; ++i$) {
+	    results$.push(x);
+	  }
+	  return results$;
+	});
+	Str.empty = List.empty;
+	Str.slice = List.slice;
+	Str.take = List.take;
+	Str.drop = List.drop;
+	Str.splitAt = List.splitAt;
+	Str.takeWhile = List.takeWhile;
+	Str.dropWhile = List.dropWhile;
+	Str.span = List.span;
+	Str.breakStr = List.breakList;
+	prelude = {
+	  Func: Func,
+	  List: List,
+	  Obj: Obj,
+	  Str: Str,
+	  Num: Num,
+	  id: id,
+	  isType: isType,
+	  replicate: replicate
+	};
+	prelude.each = List.each;
+	prelude.map = List.map;
+	prelude.filter = List.filter;
+	prelude.compact = List.compact;
+	prelude.reject = List.reject;
+	prelude.partition = List.partition;
+	prelude.find = List.find;
+	prelude.head = List.head;
+	prelude.first = List.first;
+	prelude.tail = List.tail;
+	prelude.last = List.last;
+	prelude.initial = List.initial;
+	prelude.empty = List.empty;
+	prelude.reverse = List.reverse;
+	prelude.difference = List.difference;
+	prelude.intersection = List.intersection;
+	prelude.union = List.union;
+	prelude.countBy = List.countBy;
+	prelude.groupBy = List.groupBy;
+	prelude.fold = List.fold;
+	prelude.foldl = List.foldl;
+	prelude.fold1 = List.fold1;
+	prelude.foldl1 = List.foldl1;
+	prelude.foldr = List.foldr;
+	prelude.foldr1 = List.foldr1;
+	prelude.unfoldr = List.unfoldr;
+	prelude.andList = List.andList;
+	prelude.orList = List.orList;
+	prelude.any = List.any;
+	prelude.all = List.all;
+	prelude.unique = List.unique;
+	prelude.uniqueBy = List.uniqueBy;
+	prelude.sort = List.sort;
+	prelude.sortWith = List.sortWith;
+	prelude.sortBy = List.sortBy;
+	prelude.sum = List.sum;
+	prelude.product = List.product;
+	prelude.mean = List.mean;
+	prelude.average = List.average;
+	prelude.concat = List.concat;
+	prelude.concatMap = List.concatMap;
+	prelude.flatten = List.flatten;
+	prelude.maximum = List.maximum;
+	prelude.minimum = List.minimum;
+	prelude.maximumBy = List.maximumBy;
+	prelude.minimumBy = List.minimumBy;
+	prelude.scan = List.scan;
+	prelude.scanl = List.scanl;
+	prelude.scan1 = List.scan1;
+	prelude.scanl1 = List.scanl1;
+	prelude.scanr = List.scanr;
+	prelude.scanr1 = List.scanr1;
+	prelude.slice = List.slice;
+	prelude.take = List.take;
+	prelude.drop = List.drop;
+	prelude.splitAt = List.splitAt;
+	prelude.takeWhile = List.takeWhile;
+	prelude.dropWhile = List.dropWhile;
+	prelude.span = List.span;
+	prelude.breakList = List.breakList;
+	prelude.zip = List.zip;
+	prelude.zipWith = List.zipWith;
+	prelude.zipAll = List.zipAll;
+	prelude.zipAllWith = List.zipAllWith;
+	prelude.at = List.at;
+	prelude.elemIndex = List.elemIndex;
+	prelude.elemIndices = List.elemIndices;
+	prelude.findIndex = List.findIndex;
+	prelude.findIndices = List.findIndices;
+	prelude.apply = Func.apply;
+	prelude.curry = Func.curry;
+	prelude.flip = Func.flip;
+	prelude.fix = Func.fix;
+	prelude.over = Func.over;
+	prelude.split = Str.split;
+	prelude.join = Str.join;
+	prelude.lines = Str.lines;
+	prelude.unlines = Str.unlines;
+	prelude.words = Str.words;
+	prelude.unwords = Str.unwords;
+	prelude.chars = Str.chars;
+	prelude.unchars = Str.unchars;
+	prelude.repeat = Str.repeat;
+	prelude.capitalize = Str.capitalize;
+	prelude.camelize = Str.camelize;
+	prelude.dasherize = Str.dasherize;
+	prelude.values = Obj.values;
+	prelude.keys = Obj.keys;
+	prelude.pairsToObj = Obj.pairsToObj;
+	prelude.objToPairs = Obj.objToPairs;
+	prelude.listsToObj = Obj.listsToObj;
+	prelude.objToLists = Obj.objToLists;
+	prelude.max = Num.max;
+	prelude.min = Num.min;
+	prelude.negate = Num.negate;
+	prelude.abs = Num.abs;
+	prelude.signum = Num.signum;
+	prelude.quot = Num.quot;
+	prelude.rem = Num.rem;
+	prelude.div = Num.div;
+	prelude.mod = Num.mod;
+	prelude.recip = Num.recip;
+	prelude.pi = Num.pi;
+	prelude.tau = Num.tau;
+	prelude.exp = Num.exp;
+	prelude.sqrt = Num.sqrt;
+	prelude.ln = Num.ln;
+	prelude.pow = Num.pow;
+	prelude.sin = Num.sin;
+	prelude.tan = Num.tan;
+	prelude.cos = Num.cos;
+	prelude.acos = Num.acos;
+	prelude.asin = Num.asin;
+	prelude.atan = Num.atan;
+	prelude.atan2 = Num.atan2;
+	prelude.truncate = Num.truncate;
+	prelude.round = Num.round;
+	prelude.ceiling = Num.ceiling;
+	prelude.floor = Num.floor;
+	prelude.isItNaN = Num.isItNaN;
+	prelude.even = Num.even;
+	prelude.odd = Num.odd;
+	prelude.gcd = Num.gcd;
+	prelude.lcm = Num.lcm;
+	prelude.VERSION = '1.1.2';
+	module.exports = prelude;
+	function curry$(f, bound){
+	  var context,
+	  _curry = function(args) {
+	    return f.length > 1 ? function(){
+	      var params = args ? args.concat() : [];
+	      context = bound ? context || this : this;
+	      return params.push.apply(params, arguments) <
+	          f.length && arguments.length ?
+	        _curry.call(context, params) : f.apply(context, params);
+	    } : f;
+	  };
+	  return _curry();
 	}
 
 /***/ },
 /* 5 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	'use strict';
-	var addToUnscopables = __webpack_require__(6)
-	  , step             = __webpack_require__(7)
-	  , Iterators        = __webpack_require__(8)
-	  , toIObject        = __webpack_require__(9);
-
-	// 22.1.3.4 Array.prototype.entries()
-	// 22.1.3.13 Array.prototype.keys()
-	// 22.1.3.29 Array.prototype.values()
-	// 22.1.3.30 Array.prototype[@@iterator]()
-	module.exports = __webpack_require__(13)(Array, 'Array', function(iterated, kind){
-	  this._t = toIObject(iterated); // target
-	  this._i = 0;                   // next index
-	  this._k = kind;                // kind
-	// 22.1.5.2.1 %ArrayIteratorPrototype%.next()
-	}, function(){
-	  var O     = this._t
-	    , kind  = this._k
-	    , index = this._i++;
-	  if(!O || index >= O.length){
-	    this._t = undefined;
-	    return step(1);
-	  }
-	  if(kind == 'keys'  )return step(0, index);
-	  if(kind == 'values')return step(0, O[index]);
-	  return step(0, [index, O[index]]);
-	}, 'values');
-
-	// argumentsList[@@iterator] is %ArrayProto_values% (9.4.4.6, 9.4.4.7)
-	Iterators.Arguments = Iterators.Array;
-
-	addToUnscopables('keys');
-	addToUnscopables('values');
-	addToUnscopables('entries');
+	// Generated by LiveScript 1.4.0
+	var apply, curry, flip, fix, over, memoize, slice$ = [].slice, toString$ = {}.toString;
+	apply = curry$(function(f, list){
+	  return f.apply(null, list);
+	});
+	curry = function(f){
+	  return curry$(f);
+	};
+	flip = curry$(function(f, x, y){
+	  return f(y, x);
+	});
+	fix = function(f){
+	  return function(g){
+	    return function(){
+	      return f(g(g)).apply(null, arguments);
+	    };
+	  }(function(g){
+	    return function(){
+	      return f(g(g)).apply(null, arguments);
+	    };
+	  });
+	};
+	over = curry$(function(f, g, x, y){
+	  return f(g(x), g(y));
+	});
+	memoize = function(f){
+	  var memo;
+	  memo = {};
+	  return function(){
+	    var args, key, arg;
+	    args = slice$.call(arguments);
+	    key = (function(){
+	      var i$, ref$, len$, results$ = [];
+	      for (i$ = 0, len$ = (ref$ = args).length; i$ < len$; ++i$) {
+	        arg = ref$[i$];
+	        results$.push(arg + toString$.call(arg).slice(8, -1));
+	      }
+	      return results$;
+	    }()).join('');
+	    return memo[key] = key in memo
+	      ? memo[key]
+	      : f.apply(null, args);
+	  };
+	};
+	module.exports = {
+	  curry: curry,
+	  flip: flip,
+	  fix: fix,
+	  apply: apply,
+	  over: over,
+	  memoize: memoize
+	};
+	function curry$(f, bound){
+	  var context,
+	  _curry = function(args) {
+	    return f.length > 1 ? function(){
+	      var params = args ? args.concat() : [];
+	      context = bound ? context || this : this;
+	      return params.push.apply(params, arguments) <
+	          f.length && arguments.length ?
+	        _curry.call(context, params) : f.apply(context, params);
+	    } : f;
+	  };
+	  return _curry();
+	}
 
 /***/ },
 /* 6 */
 /***/ function(module, exports) {
 
-	module.exports = function(){ /* empty */ };
+	// Generated by LiveScript 1.4.0
+	var each, map, compact, filter, reject, partition, find, head, first, tail, last, initial, empty, reverse, unique, uniqueBy, fold, foldl, fold1, foldl1, foldr, foldr1, unfoldr, concat, concatMap, flatten, difference, intersection, union, countBy, groupBy, andList, orList, any, all, sort, sortWith, sortBy, sum, product, mean, average, maximum, minimum, maximumBy, minimumBy, scan, scanl, scan1, scanl1, scanr, scanr1, slice, take, drop, splitAt, takeWhile, dropWhile, span, breakList, zip, zipWith, zipAll, zipAllWith, at, elemIndex, elemIndices, findIndex, findIndices, toString$ = {}.toString, slice$ = [].slice;
+	each = curry$(function(f, xs){
+	  var i$, len$, x;
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    x = xs[i$];
+	    f(x);
+	  }
+	  return xs;
+	});
+	map = curry$(function(f, xs){
+	  var i$, len$, x, results$ = [];
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    x = xs[i$];
+	    results$.push(f(x));
+	  }
+	  return results$;
+	});
+	compact = function(xs){
+	  var i$, len$, x, results$ = [];
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    x = xs[i$];
+	    if (x) {
+	      results$.push(x);
+	    }
+	  }
+	  return results$;
+	};
+	filter = curry$(function(f, xs){
+	  var i$, len$, x, results$ = [];
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    x = xs[i$];
+	    if (f(x)) {
+	      results$.push(x);
+	    }
+	  }
+	  return results$;
+	});
+	reject = curry$(function(f, xs){
+	  var i$, len$, x, results$ = [];
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    x = xs[i$];
+	    if (!f(x)) {
+	      results$.push(x);
+	    }
+	  }
+	  return results$;
+	});
+	partition = curry$(function(f, xs){
+	  var passed, failed, i$, len$, x;
+	  passed = [];
+	  failed = [];
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    x = xs[i$];
+	    (f(x) ? passed : failed).push(x);
+	  }
+	  return [passed, failed];
+	});
+	find = curry$(function(f, xs){
+	  var i$, len$, x;
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    x = xs[i$];
+	    if (f(x)) {
+	      return x;
+	    }
+	  }
+	});
+	head = first = function(xs){
+	  return xs[0];
+	};
+	tail = function(xs){
+	  if (!xs.length) {
+	    return;
+	  }
+	  return xs.slice(1);
+	};
+	last = function(xs){
+	  return xs[xs.length - 1];
+	};
+	initial = function(xs){
+	  if (!xs.length) {
+	    return;
+	  }
+	  return xs.slice(0, -1);
+	};
+	empty = function(xs){
+	  return !xs.length;
+	};
+	reverse = function(xs){
+	  return xs.concat().reverse();
+	};
+	unique = function(xs){
+	  var result, i$, len$, x;
+	  result = [];
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    x = xs[i$];
+	    if (!in$(x, result)) {
+	      result.push(x);
+	    }
+	  }
+	  return result;
+	};
+	uniqueBy = curry$(function(f, xs){
+	  var seen, i$, len$, x, val, results$ = [];
+	  seen = [];
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    x = xs[i$];
+	    val = f(x);
+	    if (in$(val, seen)) {
+	      continue;
+	    }
+	    seen.push(val);
+	    results$.push(x);
+	  }
+	  return results$;
+	});
+	fold = foldl = curry$(function(f, memo, xs){
+	  var i$, len$, x;
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    x = xs[i$];
+	    memo = f(memo, x);
+	  }
+	  return memo;
+	});
+	fold1 = foldl1 = curry$(function(f, xs){
+	  return fold(f, xs[0], xs.slice(1));
+	});
+	foldr = curry$(function(f, memo, xs){
+	  var i$, x;
+	  for (i$ = xs.length - 1; i$ >= 0; --i$) {
+	    x = xs[i$];
+	    memo = f(x, memo);
+	  }
+	  return memo;
+	});
+	foldr1 = curry$(function(f, xs){
+	  return foldr(f, xs[xs.length - 1], xs.slice(0, -1));
+	});
+	unfoldr = curry$(function(f, b){
+	  var result, x, that;
+	  result = [];
+	  x = b;
+	  while ((that = f(x)) != null) {
+	    result.push(that[0]);
+	    x = that[1];
+	  }
+	  return result;
+	});
+	concat = function(xss){
+	  return [].concat.apply([], xss);
+	};
+	concatMap = curry$(function(f, xs){
+	  var x;
+	  return [].concat.apply([], (function(){
+	    var i$, ref$, len$, results$ = [];
+	    for (i$ = 0, len$ = (ref$ = xs).length; i$ < len$; ++i$) {
+	      x = ref$[i$];
+	      results$.push(f(x));
+	    }
+	    return results$;
+	  }()));
+	});
+	flatten = function(xs){
+	  var x;
+	  return [].concat.apply([], (function(){
+	    var i$, ref$, len$, results$ = [];
+	    for (i$ = 0, len$ = (ref$ = xs).length; i$ < len$; ++i$) {
+	      x = ref$[i$];
+	      if (toString$.call(x).slice(8, -1) === 'Array') {
+	        results$.push(flatten(x));
+	      } else {
+	        results$.push(x);
+	      }
+	    }
+	    return results$;
+	  }()));
+	};
+	difference = function(xs){
+	  var yss, results, i$, len$, x, j$, len1$, ys;
+	  yss = slice$.call(arguments, 1);
+	  results = [];
+	  outer: for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    x = xs[i$];
+	    for (j$ = 0, len1$ = yss.length; j$ < len1$; ++j$) {
+	      ys = yss[j$];
+	      if (in$(x, ys)) {
+	        continue outer;
+	      }
+	    }
+	    results.push(x);
+	  }
+	  return results;
+	};
+	intersection = function(xs){
+	  var yss, results, i$, len$, x, j$, len1$, ys;
+	  yss = slice$.call(arguments, 1);
+	  results = [];
+	  outer: for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    x = xs[i$];
+	    for (j$ = 0, len1$ = yss.length; j$ < len1$; ++j$) {
+	      ys = yss[j$];
+	      if (!in$(x, ys)) {
+	        continue outer;
+	      }
+	    }
+	    results.push(x);
+	  }
+	  return results;
+	};
+	union = function(){
+	  var xss, results, i$, len$, xs, j$, len1$, x;
+	  xss = slice$.call(arguments);
+	  results = [];
+	  for (i$ = 0, len$ = xss.length; i$ < len$; ++i$) {
+	    xs = xss[i$];
+	    for (j$ = 0, len1$ = xs.length; j$ < len1$; ++j$) {
+	      x = xs[j$];
+	      if (!in$(x, results)) {
+	        results.push(x);
+	      }
+	    }
+	  }
+	  return results;
+	};
+	countBy = curry$(function(f, xs){
+	  var results, i$, len$, x, key;
+	  results = {};
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    x = xs[i$];
+	    key = f(x);
+	    if (key in results) {
+	      results[key] += 1;
+	    } else {
+	      results[key] = 1;
+	    }
+	  }
+	  return results;
+	});
+	groupBy = curry$(function(f, xs){
+	  var results, i$, len$, x, key;
+	  results = {};
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    x = xs[i$];
+	    key = f(x);
+	    if (key in results) {
+	      results[key].push(x);
+	    } else {
+	      results[key] = [x];
+	    }
+	  }
+	  return results;
+	});
+	andList = function(xs){
+	  var i$, len$, x;
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    x = xs[i$];
+	    if (!x) {
+	      return false;
+	    }
+	  }
+	  return true;
+	};
+	orList = function(xs){
+	  var i$, len$, x;
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    x = xs[i$];
+	    if (x) {
+	      return true;
+	    }
+	  }
+	  return false;
+	};
+	any = curry$(function(f, xs){
+	  var i$, len$, x;
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    x = xs[i$];
+	    if (f(x)) {
+	      return true;
+	    }
+	  }
+	  return false;
+	});
+	all = curry$(function(f, xs){
+	  var i$, len$, x;
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    x = xs[i$];
+	    if (!f(x)) {
+	      return false;
+	    }
+	  }
+	  return true;
+	});
+	sort = function(xs){
+	  return xs.concat().sort(function(x, y){
+	    if (x > y) {
+	      return 1;
+	    } else if (x < y) {
+	      return -1;
+	    } else {
+	      return 0;
+	    }
+	  });
+	};
+	sortWith = curry$(function(f, xs){
+	  return xs.concat().sort(f);
+	});
+	sortBy = curry$(function(f, xs){
+	  return xs.concat().sort(function(x, y){
+	    if (f(x) > f(y)) {
+	      return 1;
+	    } else if (f(x) < f(y)) {
+	      return -1;
+	    } else {
+	      return 0;
+	    }
+	  });
+	});
+	sum = function(xs){
+	  var result, i$, len$, x;
+	  result = 0;
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    x = xs[i$];
+	    result += x;
+	  }
+	  return result;
+	};
+	product = function(xs){
+	  var result, i$, len$, x;
+	  result = 1;
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    x = xs[i$];
+	    result *= x;
+	  }
+	  return result;
+	};
+	mean = average = function(xs){
+	  var sum, i$, len$, x;
+	  sum = 0;
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    x = xs[i$];
+	    sum += x;
+	  }
+	  return sum / xs.length;
+	};
+	maximum = function(xs){
+	  var max, i$, ref$, len$, x;
+	  max = xs[0];
+	  for (i$ = 0, len$ = (ref$ = xs.slice(1)).length; i$ < len$; ++i$) {
+	    x = ref$[i$];
+	    if (x > max) {
+	      max = x;
+	    }
+	  }
+	  return max;
+	};
+	minimum = function(xs){
+	  var min, i$, ref$, len$, x;
+	  min = xs[0];
+	  for (i$ = 0, len$ = (ref$ = xs.slice(1)).length; i$ < len$; ++i$) {
+	    x = ref$[i$];
+	    if (x < min) {
+	      min = x;
+	    }
+	  }
+	  return min;
+	};
+	maximumBy = curry$(function(f, xs){
+	  var max, i$, ref$, len$, x;
+	  max = xs[0];
+	  for (i$ = 0, len$ = (ref$ = xs.slice(1)).length; i$ < len$; ++i$) {
+	    x = ref$[i$];
+	    if (f(x) > f(max)) {
+	      max = x;
+	    }
+	  }
+	  return max;
+	});
+	minimumBy = curry$(function(f, xs){
+	  var min, i$, ref$, len$, x;
+	  min = xs[0];
+	  for (i$ = 0, len$ = (ref$ = xs.slice(1)).length; i$ < len$; ++i$) {
+	    x = ref$[i$];
+	    if (f(x) < f(min)) {
+	      min = x;
+	    }
+	  }
+	  return min;
+	});
+	scan = scanl = curry$(function(f, memo, xs){
+	  var last, x;
+	  last = memo;
+	  return [memo].concat((function(){
+	    var i$, ref$, len$, results$ = [];
+	    for (i$ = 0, len$ = (ref$ = xs).length; i$ < len$; ++i$) {
+	      x = ref$[i$];
+	      results$.push(last = f(last, x));
+	    }
+	    return results$;
+	  }()));
+	});
+	scan1 = scanl1 = curry$(function(f, xs){
+	  if (!xs.length) {
+	    return;
+	  }
+	  return scan(f, xs[0], xs.slice(1));
+	});
+	scanr = curry$(function(f, memo, xs){
+	  xs = xs.concat().reverse();
+	  return scan(f, memo, xs).reverse();
+	});
+	scanr1 = curry$(function(f, xs){
+	  if (!xs.length) {
+	    return;
+	  }
+	  xs = xs.concat().reverse();
+	  return scan(f, xs[0], xs.slice(1)).reverse();
+	});
+	slice = curry$(function(x, y, xs){
+	  return xs.slice(x, y);
+	});
+	take = curry$(function(n, xs){
+	  if (n <= 0) {
+	    return xs.slice(0, 0);
+	  } else {
+	    return xs.slice(0, n);
+	  }
+	});
+	drop = curry$(function(n, xs){
+	  if (n <= 0) {
+	    return xs;
+	  } else {
+	    return xs.slice(n);
+	  }
+	});
+	splitAt = curry$(function(n, xs){
+	  return [take(n, xs), drop(n, xs)];
+	});
+	takeWhile = curry$(function(p, xs){
+	  var len, i;
+	  len = xs.length;
+	  if (!len) {
+	    return xs;
+	  }
+	  i = 0;
+	  while (i < len && p(xs[i])) {
+	    i += 1;
+	  }
+	  return xs.slice(0, i);
+	});
+	dropWhile = curry$(function(p, xs){
+	  var len, i;
+	  len = xs.length;
+	  if (!len) {
+	    return xs;
+	  }
+	  i = 0;
+	  while (i < len && p(xs[i])) {
+	    i += 1;
+	  }
+	  return xs.slice(i);
+	});
+	span = curry$(function(p, xs){
+	  return [takeWhile(p, xs), dropWhile(p, xs)];
+	});
+	breakList = curry$(function(p, xs){
+	  return span(compose$(p, not$), xs);
+	});
+	zip = curry$(function(xs, ys){
+	  var result, len, i$, len$, i, x;
+	  result = [];
+	  len = ys.length;
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    i = i$;
+	    x = xs[i$];
+	    if (i === len) {
+	      break;
+	    }
+	    result.push([x, ys[i]]);
+	  }
+	  return result;
+	});
+	zipWith = curry$(function(f, xs, ys){
+	  var result, len, i$, len$, i, x;
+	  result = [];
+	  len = ys.length;
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    i = i$;
+	    x = xs[i$];
+	    if (i === len) {
+	      break;
+	    }
+	    result.push(f(x, ys[i]));
+	  }
+	  return result;
+	});
+	zipAll = function(){
+	  var xss, minLength, i$, len$, xs, ref$, i, lresult$, j$, results$ = [];
+	  xss = slice$.call(arguments);
+	  minLength = undefined;
+	  for (i$ = 0, len$ = xss.length; i$ < len$; ++i$) {
+	    xs = xss[i$];
+	    minLength <= (ref$ = xs.length) || (minLength = ref$);
+	  }
+	  for (i$ = 0; i$ < minLength; ++i$) {
+	    i = i$;
+	    lresult$ = [];
+	    for (j$ = 0, len$ = xss.length; j$ < len$; ++j$) {
+	      xs = xss[j$];
+	      lresult$.push(xs[i]);
+	    }
+	    results$.push(lresult$);
+	  }
+	  return results$;
+	};
+	zipAllWith = function(f){
+	  var xss, minLength, i$, len$, xs, ref$, i, results$ = [];
+	  xss = slice$.call(arguments, 1);
+	  minLength = undefined;
+	  for (i$ = 0, len$ = xss.length; i$ < len$; ++i$) {
+	    xs = xss[i$];
+	    minLength <= (ref$ = xs.length) || (minLength = ref$);
+	  }
+	  for (i$ = 0; i$ < minLength; ++i$) {
+	    i = i$;
+	    results$.push(f.apply(null, (fn$())));
+	  }
+	  return results$;
+	  function fn$(){
+	    var i$, ref$, len$, results$ = [];
+	    for (i$ = 0, len$ = (ref$ = xss).length; i$ < len$; ++i$) {
+	      xs = ref$[i$];
+	      results$.push(xs[i]);
+	    }
+	    return results$;
+	  }
+	};
+	at = curry$(function(n, xs){
+	  if (n < 0) {
+	    return xs[xs.length + n];
+	  } else {
+	    return xs[n];
+	  }
+	});
+	elemIndex = curry$(function(el, xs){
+	  var i$, len$, i, x;
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    i = i$;
+	    x = xs[i$];
+	    if (x === el) {
+	      return i;
+	    }
+	  }
+	});
+	elemIndices = curry$(function(el, xs){
+	  var i$, len$, i, x, results$ = [];
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    i = i$;
+	    x = xs[i$];
+	    if (x === el) {
+	      results$.push(i);
+	    }
+	  }
+	  return results$;
+	});
+	findIndex = curry$(function(f, xs){
+	  var i$, len$, i, x;
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    i = i$;
+	    x = xs[i$];
+	    if (f(x)) {
+	      return i;
+	    }
+	  }
+	});
+	findIndices = curry$(function(f, xs){
+	  var i$, len$, i, x, results$ = [];
+	  for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+	    i = i$;
+	    x = xs[i$];
+	    if (f(x)) {
+	      results$.push(i);
+	    }
+	  }
+	  return results$;
+	});
+	module.exports = {
+	  each: each,
+	  map: map,
+	  filter: filter,
+	  compact: compact,
+	  reject: reject,
+	  partition: partition,
+	  find: find,
+	  head: head,
+	  first: first,
+	  tail: tail,
+	  last: last,
+	  initial: initial,
+	  empty: empty,
+	  reverse: reverse,
+	  difference: difference,
+	  intersection: intersection,
+	  union: union,
+	  countBy: countBy,
+	  groupBy: groupBy,
+	  fold: fold,
+	  fold1: fold1,
+	  foldl: foldl,
+	  foldl1: foldl1,
+	  foldr: foldr,
+	  foldr1: foldr1,
+	  unfoldr: unfoldr,
+	  andList: andList,
+	  orList: orList,
+	  any: any,
+	  all: all,
+	  unique: unique,
+	  uniqueBy: uniqueBy,
+	  sort: sort,
+	  sortWith: sortWith,
+	  sortBy: sortBy,
+	  sum: sum,
+	  product: product,
+	  mean: mean,
+	  average: average,
+	  concat: concat,
+	  concatMap: concatMap,
+	  flatten: flatten,
+	  maximum: maximum,
+	  minimum: minimum,
+	  maximumBy: maximumBy,
+	  minimumBy: minimumBy,
+	  scan: scan,
+	  scan1: scan1,
+	  scanl: scanl,
+	  scanl1: scanl1,
+	  scanr: scanr,
+	  scanr1: scanr1,
+	  slice: slice,
+	  take: take,
+	  drop: drop,
+	  splitAt: splitAt,
+	  takeWhile: takeWhile,
+	  dropWhile: dropWhile,
+	  span: span,
+	  breakList: breakList,
+	  zip: zip,
+	  zipWith: zipWith,
+	  zipAll: zipAll,
+	  zipAllWith: zipAllWith,
+	  at: at,
+	  elemIndex: elemIndex,
+	  elemIndices: elemIndices,
+	  findIndex: findIndex,
+	  findIndices: findIndices
+	};
+	function curry$(f, bound){
+	  var context,
+	  _curry = function(args) {
+	    return f.length > 1 ? function(){
+	      var params = args ? args.concat() : [];
+	      context = bound ? context || this : this;
+	      return params.push.apply(params, arguments) <
+	          f.length && arguments.length ?
+	        _curry.call(context, params) : f.apply(context, params);
+	    } : f;
+	  };
+	  return _curry();
+	}
+	function in$(x, xs){
+	  var i = -1, l = xs.length >>> 0;
+	  while (++i < l) if (x === xs[i]) return true;
+	  return false;
+	}
+	function compose$() {
+	  var functions = arguments;
+	  return function() {
+	    var i, result;
+	    result = functions[0].apply(this, arguments);
+	    for (i = 1; i < functions.length; ++i) {
+	      result = functions[i](result);
+	    }
+	    return result;
+	  };
+	}
+	function not$(x){ return !x; }
 
 /***/ },
 /* 7 */
 /***/ function(module, exports) {
 
-	module.exports = function(done, value){
-	  return {value: value, done: !!done};
+	// Generated by LiveScript 1.4.0
+	var values, keys, pairsToObj, objToPairs, listsToObj, objToLists, empty, each, map, compact, filter, reject, partition, find;
+	values = function(object){
+	  var i$, x, results$ = [];
+	  for (i$ in object) {
+	    x = object[i$];
+	    results$.push(x);
+	  }
+	  return results$;
 	};
+	keys = function(object){
+	  var x, results$ = [];
+	  for (x in object) {
+	    results$.push(x);
+	  }
+	  return results$;
+	};
+	pairsToObj = function(object){
+	  var i$, len$, x, resultObj$ = {};
+	  for (i$ = 0, len$ = object.length; i$ < len$; ++i$) {
+	    x = object[i$];
+	    resultObj$[x[0]] = x[1];
+	  }
+	  return resultObj$;
+	};
+	objToPairs = function(object){
+	  var key, value, results$ = [];
+	  for (key in object) {
+	    value = object[key];
+	    results$.push([key, value]);
+	  }
+	  return results$;
+	};
+	listsToObj = curry$(function(keys, values){
+	  var i$, len$, i, key, resultObj$ = {};
+	  for (i$ = 0, len$ = keys.length; i$ < len$; ++i$) {
+	    i = i$;
+	    key = keys[i$];
+	    resultObj$[key] = values[i];
+	  }
+	  return resultObj$;
+	});
+	objToLists = function(object){
+	  var keys, values, key, value;
+	  keys = [];
+	  values = [];
+	  for (key in object) {
+	    value = object[key];
+	    keys.push(key);
+	    values.push(value);
+	  }
+	  return [keys, values];
+	};
+	empty = function(object){
+	  var x;
+	  for (x in object) {
+	    return false;
+	  }
+	  return true;
+	};
+	each = curry$(function(f, object){
+	  var i$, x;
+	  for (i$ in object) {
+	    x = object[i$];
+	    f(x);
+	  }
+	  return object;
+	});
+	map = curry$(function(f, object){
+	  var k, x, resultObj$ = {};
+	  for (k in object) {
+	    x = object[k];
+	    resultObj$[k] = f(x);
+	  }
+	  return resultObj$;
+	});
+	compact = function(object){
+	  var k, x, resultObj$ = {};
+	  for (k in object) {
+	    x = object[k];
+	    if (x) {
+	      resultObj$[k] = x;
+	    }
+	  }
+	  return resultObj$;
+	};
+	filter = curry$(function(f, object){
+	  var k, x, resultObj$ = {};
+	  for (k in object) {
+	    x = object[k];
+	    if (f(x)) {
+	      resultObj$[k] = x;
+	    }
+	  }
+	  return resultObj$;
+	});
+	reject = curry$(function(f, object){
+	  var k, x, resultObj$ = {};
+	  for (k in object) {
+	    x = object[k];
+	    if (!f(x)) {
+	      resultObj$[k] = x;
+	    }
+	  }
+	  return resultObj$;
+	});
+	partition = curry$(function(f, object){
+	  var passed, failed, k, x;
+	  passed = {};
+	  failed = {};
+	  for (k in object) {
+	    x = object[k];
+	    (f(x) ? passed : failed)[k] = x;
+	  }
+	  return [passed, failed];
+	});
+	find = curry$(function(f, object){
+	  var i$, x;
+	  for (i$ in object) {
+	    x = object[i$];
+	    if (f(x)) {
+	      return x;
+	    }
+	  }
+	});
+	module.exports = {
+	  values: values,
+	  keys: keys,
+	  pairsToObj: pairsToObj,
+	  objToPairs: objToPairs,
+	  listsToObj: listsToObj,
+	  objToLists: objToLists,
+	  empty: empty,
+	  each: each,
+	  map: map,
+	  filter: filter,
+	  compact: compact,
+	  reject: reject,
+	  partition: partition,
+	  find: find
+	};
+	function curry$(f, bound){
+	  var context,
+	  _curry = function(args) {
+	    return f.length > 1 ? function(){
+	      var params = args ? args.concat() : [];
+	      context = bound ? context || this : this;
+	      return params.push.apply(params, arguments) <
+	          f.length && arguments.length ?
+	        _curry.call(context, params) : f.apply(context, params);
+	    } : f;
+	  };
+	  return _curry();
+	}
 
 /***/ },
 /* 8 */
 /***/ function(module, exports) {
 
-	module.exports = {};
+	// Generated by LiveScript 1.4.0
+	var split, join, lines, unlines, words, unwords, chars, unchars, reverse, repeat, capitalize, camelize, dasherize;
+	split = curry$(function(sep, str){
+	  return str.split(sep);
+	});
+	join = curry$(function(sep, xs){
+	  return xs.join(sep);
+	});
+	lines = function(str){
+	  if (!str.length) {
+	    return [];
+	  }
+	  return str.split('\n');
+	};
+	unlines = function(it){
+	  return it.join('\n');
+	};
+	words = function(str){
+	  if (!str.length) {
+	    return [];
+	  }
+	  return str.split(/[ ]+/);
+	};
+	unwords = function(it){
+	  return it.join(' ');
+	};
+	chars = function(it){
+	  return it.split('');
+	};
+	unchars = function(it){
+	  return it.join('');
+	};
+	reverse = function(str){
+	  return str.split('').reverse().join('');
+	};
+	repeat = curry$(function(n, str){
+	  var result, i$;
+	  result = '';
+	  for (i$ = 0; i$ < n; ++i$) {
+	    result += str;
+	  }
+	  return result;
+	});
+	capitalize = function(str){
+	  return str.charAt(0).toUpperCase() + str.slice(1);
+	};
+	camelize = function(it){
+	  return it.replace(/[-_]+(.)?/g, function(arg$, c){
+	    return (c != null ? c : '').toUpperCase();
+	  });
+	};
+	dasherize = function(str){
+	  return str.replace(/([^-A-Z])([A-Z]+)/g, function(arg$, lower, upper){
+	    return lower + "-" + (upper.length > 1
+	      ? upper
+	      : upper.toLowerCase());
+	  }).replace(/^([A-Z]+)/, function(arg$, upper){
+	    if (upper.length > 1) {
+	      return upper + "-";
+	    } else {
+	      return upper.toLowerCase();
+	    }
+	  });
+	};
+	module.exports = {
+	  split: split,
+	  join: join,
+	  lines: lines,
+	  unlines: unlines,
+	  words: words,
+	  unwords: unwords,
+	  chars: chars,
+	  unchars: unchars,
+	  reverse: reverse,
+	  repeat: repeat,
+	  capitalize: capitalize,
+	  camelize: camelize,
+	  dasherize: dasherize
+	};
+	function curry$(f, bound){
+	  var context,
+	  _curry = function(args) {
+	    return f.length > 1 ? function(){
+	      var params = args ? args.concat() : [];
+	      context = bound ? context || this : this;
+	      return params.push.apply(params, arguments) <
+	          f.length && arguments.length ?
+	        _curry.call(context, params) : f.apply(context, params);
+	    } : f;
+	  };
+	  return _curry();
+	}
 
 /***/ },
 /* 9 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	// to indexed object, toObject with fallback for non-array-like ES3 strings
-	var IObject = __webpack_require__(10)
-	  , defined = __webpack_require__(12);
-	module.exports = function(it){
-	  return IObject(defined(it));
+	// Generated by LiveScript 1.4.0
+	var max, min, negate, abs, signum, quot, rem, div, mod, recip, pi, tau, exp, sqrt, ln, pow, sin, tan, cos, asin, acos, atan, atan2, truncate, round, ceiling, floor, isItNaN, even, odd, gcd, lcm;
+	max = curry$(function(x$, y$){
+	  return x$ > y$ ? x$ : y$;
+	});
+	min = curry$(function(x$, y$){
+	  return x$ < y$ ? x$ : y$;
+	});
+	negate = function(x){
+	  return -x;
 	};
+	abs = Math.abs;
+	signum = function(x){
+	  if (x < 0) {
+	    return -1;
+	  } else if (x > 0) {
+	    return 1;
+	  } else {
+	    return 0;
+	  }
+	};
+	quot = curry$(function(x, y){
+	  return ~~(x / y);
+	});
+	rem = curry$(function(x$, y$){
+	  return x$ % y$;
+	});
+	div = curry$(function(x, y){
+	  return Math.floor(x / y);
+	});
+	mod = curry$(function(x$, y$){
+	  var ref$;
+	  return (((x$) % (ref$ = y$) + ref$) % ref$);
+	});
+	recip = (function(it){
+	  return 1 / it;
+	});
+	pi = Math.PI;
+	tau = pi * 2;
+	exp = Math.exp;
+	sqrt = Math.sqrt;
+	ln = Math.log;
+	pow = curry$(function(x$, y$){
+	  return Math.pow(x$, y$);
+	});
+	sin = Math.sin;
+	tan = Math.tan;
+	cos = Math.cos;
+	asin = Math.asin;
+	acos = Math.acos;
+	atan = Math.atan;
+	atan2 = curry$(function(x, y){
+	  return Math.atan2(x, y);
+	});
+	truncate = function(x){
+	  return ~~x;
+	};
+	round = Math.round;
+	ceiling = Math.ceil;
+	floor = Math.floor;
+	isItNaN = function(x){
+	  return x !== x;
+	};
+	even = function(x){
+	  return x % 2 === 0;
+	};
+	odd = function(x){
+	  return x % 2 !== 0;
+	};
+	gcd = curry$(function(x, y){
+	  var z;
+	  x = Math.abs(x);
+	  y = Math.abs(y);
+	  while (y !== 0) {
+	    z = x % y;
+	    x = y;
+	    y = z;
+	  }
+	  return x;
+	});
+	lcm = curry$(function(x, y){
+	  return Math.abs(Math.floor(x / gcd(x, y) * y));
+	});
+	module.exports = {
+	  max: max,
+	  min: min,
+	  negate: negate,
+	  abs: abs,
+	  signum: signum,
+	  quot: quot,
+	  rem: rem,
+	  div: div,
+	  mod: mod,
+	  recip: recip,
+	  pi: pi,
+	  tau: tau,
+	  exp: exp,
+	  sqrt: sqrt,
+	  ln: ln,
+	  pow: pow,
+	  sin: sin,
+	  tan: tan,
+	  cos: cos,
+	  acos: acos,
+	  asin: asin,
+	  atan: atan,
+	  atan2: atan2,
+	  truncate: truncate,
+	  round: round,
+	  ceiling: ceiling,
+	  floor: floor,
+	  isItNaN: isItNaN,
+	  even: even,
+	  odd: odd,
+	  gcd: gcd,
+	  lcm: lcm
+	};
+	function curry$(f, bound){
+	  var context,
+	  _curry = function(args) {
+	    return f.length > 1 ? function(){
+	      var params = args ? args.concat() : [];
+	      context = bound ? context || this : this;
+	      return params.push.apply(params, arguments) <
+	          f.length && arguments.length ?
+	        _curry.call(context, params) : f.apply(context, params);
+	    } : f;
+	  };
+	  return _curry();
+	}
 
 /***/ },
 /* 10 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// fallback for non-array-like ES3 and non-enumerable old V8 strings
-	var cof = __webpack_require__(11);
-	module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
-	  return cof(it) == 'String' ? it.split('') : Object(it);
-	};
-
-/***/ },
-/* 11 */
 /***/ function(module, exports) {
 
-	var toString = {}.toString;
-
-	module.exports = function(it){
-	  return toString.call(it).slice(8, -1);
-	};
-
-/***/ },
-/* 12 */
-/***/ function(module, exports) {
-
-	// 7.2.1 RequireObjectCoercible(argument)
-	module.exports = function(it){
-	  if(it == undefined)throw TypeError("Can't call method on  " + it);
-	  return it;
-	};
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	var LIBRARY        = __webpack_require__(14)
-	  , $export        = __webpack_require__(15)
-	  , redefine       = __webpack_require__(30)
-	  , hide           = __webpack_require__(20)
-	  , has            = __webpack_require__(31)
-	  , Iterators      = __webpack_require__(8)
-	  , $iterCreate    = __webpack_require__(32)
-	  , setToStringTag = __webpack_require__(46)
-	  , getPrototypeOf = __webpack_require__(48)
-	  , ITERATOR       = __webpack_require__(47)('iterator')
-	  , BUGGY          = !([].keys && 'next' in [].keys()) // Safari has buggy iterators w/o `next`
-	  , FF_ITERATOR    = '@@iterator'
-	  , KEYS           = 'keys'
-	  , VALUES         = 'values';
-
-	var returnThis = function(){ return this; };
-
-	module.exports = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCED){
-	  $iterCreate(Constructor, NAME, next);
-	  var getMethod = function(kind){
-	    if(!BUGGY && kind in proto)return proto[kind];
-	    switch(kind){
-	      case KEYS: return function keys(){ return new Constructor(this, kind); };
-	      case VALUES: return function values(){ return new Constructor(this, kind); };
-	    } return function entries(){ return new Constructor(this, kind); };
-	  };
-	  var TAG        = NAME + ' Iterator'
-	    , DEF_VALUES = DEFAULT == VALUES
-	    , VALUES_BUG = false
-	    , proto      = Base.prototype
-	    , $native    = proto[ITERATOR] || proto[FF_ITERATOR] || DEFAULT && proto[DEFAULT]
-	    , $default   = $native || getMethod(DEFAULT)
-	    , $entries   = DEFAULT ? !DEF_VALUES ? $default : getMethod('entries') : undefined
-	    , $anyNative = NAME == 'Array' ? proto.entries || $native : $native
-	    , methods, key, IteratorPrototype;
-	  // Fix native
-	  if($anyNative){
-	    IteratorPrototype = getPrototypeOf($anyNative.call(new Base));
-	    if(IteratorPrototype !== Object.prototype){
-	      // Set @@toStringTag to native iterators
-	      setToStringTag(IteratorPrototype, TAG, true);
-	      // fix for some old engines
-	      if(!LIBRARY && !has(IteratorPrototype, ITERATOR))hide(IteratorPrototype, ITERATOR, returnThis);
-	    }
-	  }
-	  // fix Array#{values, @@iterator}.name in V8 / FF
-	  if(DEF_VALUES && $native && $native.name !== VALUES){
-	    VALUES_BUG = true;
-	    $default = function values(){ return $native.call(this); };
-	  }
-	  // Define iterator
-	  if((!LIBRARY || FORCED) && (BUGGY || VALUES_BUG || !proto[ITERATOR])){
-	    hide(proto, ITERATOR, $default);
-	  }
-	  // Plug for library
-	  Iterators[NAME] = $default;
-	  Iterators[TAG]  = returnThis;
-	  if(DEFAULT){
-	    methods = {
-	      values:  DEF_VALUES ? $default : getMethod(VALUES),
-	      keys:    IS_SET     ? $default : getMethod(KEYS),
-	      entries: $entries
-	    };
-	    if(FORCED)for(key in methods){
-	      if(!(key in proto))redefine(proto, key, methods[key]);
-	    } else $export($export.P + $export.F * (BUGGY || VALUES_BUG), NAME, methods);
-	  }
-	  return methods;
-	};
-
-/***/ },
-/* 14 */
-/***/ function(module, exports) {
-
-	module.exports = true;
-
-/***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var global    = __webpack_require__(16)
-	  , core      = __webpack_require__(17)
-	  , ctx       = __webpack_require__(18)
-	  , hide      = __webpack_require__(20)
-	  , PROTOTYPE = 'prototype';
-
-	var $export = function(type, name, source){
-	  var IS_FORCED = type & $export.F
-	    , IS_GLOBAL = type & $export.G
-	    , IS_STATIC = type & $export.S
-	    , IS_PROTO  = type & $export.P
-	    , IS_BIND   = type & $export.B
-	    , IS_WRAP   = type & $export.W
-	    , exports   = IS_GLOBAL ? core : core[name] || (core[name] = {})
-	    , expProto  = exports[PROTOTYPE]
-	    , target    = IS_GLOBAL ? global : IS_STATIC ? global[name] : (global[name] || {})[PROTOTYPE]
-	    , key, own, out;
-	  if(IS_GLOBAL)source = name;
-	  for(key in source){
-	    // contains in native
-	    own = !IS_FORCED && target && target[key] !== undefined;
-	    if(own && key in exports)continue;
-	    // export native or passed
-	    out = own ? target[key] : source[key];
-	    // prevent global pollution for namespaces
-	    exports[key] = IS_GLOBAL && typeof target[key] != 'function' ? source[key]
-	    // bind timers to global for call from export context
-	    : IS_BIND && own ? ctx(out, global)
-	    // wrap global constructors for prevent change them in library
-	    : IS_WRAP && target[key] == out ? (function(C){
-	      var F = function(a, b, c){
-	        if(this instanceof C){
-	          switch(arguments.length){
-	            case 0: return new C;
-	            case 1: return new C(a);
-	            case 2: return new C(a, b);
-	          } return new C(a, b, c);
-	        } return C.apply(this, arguments);
-	      };
-	      F[PROTOTYPE] = C[PROTOTYPE];
-	      return F;
-	    // make static versions for prototype methods
-	    })(out) : IS_PROTO && typeof out == 'function' ? ctx(Function.call, out) : out;
-	    // export proto methods to core.%CONSTRUCTOR%.methods.%NAME%
-	    if(IS_PROTO){
-	      (exports.virtual || (exports.virtual = {}))[key] = out;
-	      // export proto methods to core.%CONSTRUCTOR%.prototype.%NAME%
-	      if(type & $export.R && expProto && !expProto[key])hide(expProto, key, out);
-	    }
-	  }
-	};
-	// type bitmap
-	$export.F = 1;   // forced
-	$export.G = 2;   // global
-	$export.S = 4;   // static
-	$export.P = 8;   // proto
-	$export.B = 16;  // bind
-	$export.W = 32;  // wrap
-	$export.U = 64;  // safe
-	$export.R = 128; // real proto method for `library` 
-	module.exports = $export;
-
-/***/ },
-/* 16 */
-/***/ function(module, exports) {
-
-	// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
-	var global = module.exports = typeof window != 'undefined' && window.Math == Math
-	  ? window : typeof self != 'undefined' && self.Math == Math ? self : Function('return this')();
-	if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
-
-/***/ },
-/* 17 */
-/***/ function(module, exports) {
-
-	var core = module.exports = {version: '2.4.0'};
-	if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
-
-/***/ },
-/* 18 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// optional / simple context binding
-	var aFunction = __webpack_require__(19);
-	module.exports = function(fn, that, length){
-	  aFunction(fn);
-	  if(that === undefined)return fn;
-	  switch(length){
-	    case 1: return function(a){
-	      return fn.call(that, a);
-	    };
-	    case 2: return function(a, b){
-	      return fn.call(that, a, b);
-	    };
-	    case 3: return function(a, b, c){
-	      return fn.call(that, a, b, c);
-	    };
-	  }
-	  return function(/* ...args */){
-	    return fn.apply(that, arguments);
-	  };
-	};
-
-/***/ },
-/* 19 */
-/***/ function(module, exports) {
-
-	module.exports = function(it){
-	  if(typeof it != 'function')throw TypeError(it + ' is not a function!');
-	  return it;
-	};
-
-/***/ },
-/* 20 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var dP         = __webpack_require__(21)
-	  , createDesc = __webpack_require__(29);
-	module.exports = __webpack_require__(25) ? function(object, key, value){
-	  return dP.f(object, key, createDesc(1, value));
-	} : function(object, key, value){
-	  object[key] = value;
-	  return object;
-	};
-
-/***/ },
-/* 21 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var anObject       = __webpack_require__(22)
-	  , IE8_DOM_DEFINE = __webpack_require__(24)
-	  , toPrimitive    = __webpack_require__(28)
-	  , dP             = Object.defineProperty;
-
-	exports.f = __webpack_require__(25) ? Object.defineProperty : function defineProperty(O, P, Attributes){
-	  anObject(O);
-	  P = toPrimitive(P, true);
-	  anObject(Attributes);
-	  if(IE8_DOM_DEFINE)try {
-	    return dP(O, P, Attributes);
-	  } catch(e){ /* empty */ }
-	  if('get' in Attributes || 'set' in Attributes)throw TypeError('Accessors not supported!');
-	  if('value' in Attributes)O[P] = Attributes.value;
-	  return O;
-	};
-
-/***/ },
-/* 22 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var isObject = __webpack_require__(23);
-	module.exports = function(it){
-	  if(!isObject(it))throw TypeError(it + ' is not an object!');
-	  return it;
-	};
-
-/***/ },
-/* 23 */
-/***/ function(module, exports) {
-
-	module.exports = function(it){
-	  return typeof it === 'object' ? it !== null : typeof it === 'function';
-	};
-
-/***/ },
-/* 24 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = !__webpack_require__(25) && !__webpack_require__(26)(function(){
-	  return Object.defineProperty(__webpack_require__(27)('div'), 'a', {get: function(){ return 7; }}).a != 7;
-	});
-
-/***/ },
-/* 25 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// Thank's IE8 for his funny defineProperty
-	module.exports = !__webpack_require__(26)(function(){
-	  return Object.defineProperty({}, 'a', {get: function(){ return 7; }}).a != 7;
-	});
-
-/***/ },
-/* 26 */
-/***/ function(module, exports) {
-
-	module.exports = function(exec){
-	  try {
-	    return !!exec();
-	  } catch(e){
-	    return true;
-	  }
-	};
-
-/***/ },
-/* 27 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var isObject = __webpack_require__(23)
-	  , document = __webpack_require__(16).document
-	  // in old IE typeof document.createElement is 'object'
-	  , is = isObject(document) && isObject(document.createElement);
-	module.exports = function(it){
-	  return is ? document.createElement(it) : {};
-	};
-
-/***/ },
-/* 28 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 7.1.1 ToPrimitive(input [, PreferredType])
-	var isObject = __webpack_require__(23);
-	// instead of the ES6 spec version, we didn't implement @@toPrimitive case
-	// and the second argument - flag - preferred type is a string
-	module.exports = function(it, S){
-	  if(!isObject(it))return it;
-	  var fn, val;
-	  if(S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it)))return val;
-	  if(typeof (fn = it.valueOf) == 'function' && !isObject(val = fn.call(it)))return val;
-	  if(!S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it)))return val;
-	  throw TypeError("Can't convert object to primitive value");
-	};
-
-/***/ },
-/* 29 */
-/***/ function(module, exports) {
-
-	module.exports = function(bitmap, value){
-	  return {
-	    enumerable  : !(bitmap & 1),
-	    configurable: !(bitmap & 2),
-	    writable    : !(bitmap & 4),
-	    value       : value
-	  };
-	};
-
-/***/ },
-/* 30 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(20);
-
-/***/ },
-/* 31 */
-/***/ function(module, exports) {
-
-	var hasOwnProperty = {}.hasOwnProperty;
-	module.exports = function(it, key){
-	  return hasOwnProperty.call(it, key);
-	};
-
-/***/ },
-/* 32 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	var create         = __webpack_require__(33)
-	  , descriptor     = __webpack_require__(29)
-	  , setToStringTag = __webpack_require__(46)
-	  , IteratorPrototype = {};
-
-	// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-	__webpack_require__(20)(IteratorPrototype, __webpack_require__(47)('iterator'), function(){ return this; });
-
-	module.exports = function(Constructor, NAME, next){
-	  Constructor.prototype = create(IteratorPrototype, {next: descriptor(1, next)});
-	  setToStringTag(Constructor, NAME + ' Iterator');
-	};
-
-/***/ },
-/* 33 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
-	var anObject    = __webpack_require__(22)
-	  , dPs         = __webpack_require__(34)
-	  , enumBugKeys = __webpack_require__(44)
-	  , IE_PROTO    = __webpack_require__(41)('IE_PROTO')
-	  , Empty       = function(){ /* empty */ }
-	  , PROTOTYPE   = 'prototype';
-
-	// Create object with fake `null` prototype: use iframe Object with cleared prototype
-	var createDict = function(){
-	  // Thrash, waste and sodomy: IE GC bug
-	  var iframe = __webpack_require__(27)('iframe')
-	    , i      = enumBugKeys.length
-	    , gt     = '>'
-	    , iframeDocument;
-	  iframe.style.display = 'none';
-	  __webpack_require__(45).appendChild(iframe);
-	  iframe.src = 'javascript:'; // eslint-disable-line no-script-url
-	  // createDict = iframe.contentWindow.Object;
-	  // html.removeChild(iframe);
-	  iframeDocument = iframe.contentWindow.document;
-	  iframeDocument.open();
-	  iframeDocument.write('<script>document.F=Object</script' + gt);
-	  iframeDocument.close();
-	  createDict = iframeDocument.F;
-	  while(i--)delete createDict[PROTOTYPE][enumBugKeys[i]];
-	  return createDict();
-	};
-
-	module.exports = Object.create || function create(O, Properties){
-	  var result;
-	  if(O !== null){
-	    Empty[PROTOTYPE] = anObject(O);
-	    result = new Empty;
-	    Empty[PROTOTYPE] = null;
-	    // add "__proto__" for Object.getPrototypeOf polyfill
-	    result[IE_PROTO] = O;
-	  } else result = createDict();
-	  return Properties === undefined ? result : dPs(result, Properties);
-	};
-
-/***/ },
-/* 34 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var dP       = __webpack_require__(21)
-	  , anObject = __webpack_require__(22)
-	  , getKeys  = __webpack_require__(35);
-
-	module.exports = __webpack_require__(25) ? Object.defineProperties : function defineProperties(O, Properties){
-	  anObject(O);
-	  var keys   = getKeys(Properties)
-	    , length = keys.length
-	    , i = 0
-	    , P;
-	  while(length > i)dP.f(O, P = keys[i++], Properties[P]);
-	  return O;
-	};
-
-/***/ },
-/* 35 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 19.1.2.14 / 15.2.3.14 Object.keys(O)
-	var $keys       = __webpack_require__(36)
-	  , enumBugKeys = __webpack_require__(44);
-
-	module.exports = Object.keys || function keys(O){
-	  return $keys(O, enumBugKeys);
-	};
-
-/***/ },
-/* 36 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var has          = __webpack_require__(31)
-	  , toIObject    = __webpack_require__(9)
-	  , arrayIndexOf = __webpack_require__(37)(false)
-	  , IE_PROTO     = __webpack_require__(41)('IE_PROTO');
-
-	module.exports = function(object, names){
-	  var O      = toIObject(object)
-	    , i      = 0
-	    , result = []
-	    , key;
-	  for(key in O)if(key != IE_PROTO)has(O, key) && result.push(key);
-	  // Don't enum bug & hidden keys
-	  while(names.length > i)if(has(O, key = names[i++])){
-	    ~arrayIndexOf(result, key) || result.push(key);
-	  }
-	  return result;
-	};
-
-/***/ },
-/* 37 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// false -> Array#indexOf
-	// true  -> Array#includes
-	var toIObject = __webpack_require__(9)
-	  , toLength  = __webpack_require__(38)
-	  , toIndex   = __webpack_require__(40);
-	module.exports = function(IS_INCLUDES){
-	  return function($this, el, fromIndex){
-	    var O      = toIObject($this)
-	      , length = toLength(O.length)
-	      , index  = toIndex(fromIndex, length)
-	      , value;
-	    // Array#includes uses SameValueZero equality algorithm
-	    if(IS_INCLUDES && el != el)while(length > index){
-	      value = O[index++];
-	      if(value != value)return true;
-	    // Array#toIndex ignores holes, Array#includes - not
-	    } else for(;length > index; index++)if(IS_INCLUDES || index in O){
-	      if(O[index] === el)return IS_INCLUDES || index || 0;
-	    } return !IS_INCLUDES && -1;
-	  };
-	};
-
-/***/ },
-/* 38 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 7.1.15 ToLength
-	var toInteger = __webpack_require__(39)
-	  , min       = Math.min;
-	module.exports = function(it){
-	  return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
-	};
-
-/***/ },
-/* 39 */
-/***/ function(module, exports) {
-
-	// 7.1.4 ToInteger
-	var ceil  = Math.ceil
-	  , floor = Math.floor;
-	module.exports = function(it){
-	  return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
-	};
-
-/***/ },
-/* 40 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var toInteger = __webpack_require__(39)
-	  , max       = Math.max
-	  , min       = Math.min;
-	module.exports = function(index, length){
-	  index = toInteger(index);
-	  return index < 0 ? max(index + length, 0) : min(index, length);
-	};
-
-/***/ },
-/* 41 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var shared = __webpack_require__(42)('keys')
-	  , uid    = __webpack_require__(43);
-	module.exports = function(key){
-	  return shared[key] || (shared[key] = uid(key));
-	};
-
-/***/ },
-/* 42 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var global = __webpack_require__(16)
-	  , SHARED = '__core-js_shared__'
-	  , store  = global[SHARED] || (global[SHARED] = {});
-	module.exports = function(key){
-	  return store[key] || (store[key] = {});
-	};
-
-/***/ },
-/* 43 */
-/***/ function(module, exports) {
-
-	var id = 0
-	  , px = Math.random();
-	module.exports = function(key){
-	  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
-	};
-
-/***/ },
-/* 44 */
-/***/ function(module, exports) {
-
-	// IE 8- don't enum bug keys
-	module.exports = (
-	  'constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf'
-	).split(',');
-
-/***/ },
-/* 45 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(16).document && document.documentElement;
-
-/***/ },
-/* 46 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var def = __webpack_require__(21).f
-	  , has = __webpack_require__(31)
-	  , TAG = __webpack_require__(47)('toStringTag');
-
-	module.exports = function(it, tag, stat){
-	  if(it && !has(it = stat ? it : it.prototype, TAG))def(it, TAG, {configurable: true, value: tag});
-	};
-
-/***/ },
-/* 47 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var store      = __webpack_require__(42)('wks')
-	  , uid        = __webpack_require__(43)
-	  , Symbol     = __webpack_require__(16).Symbol
-	  , USE_SYMBOL = typeof Symbol == 'function';
-
-	var $exports = module.exports = function(name){
-	  return store[name] || (store[name] =
-	    USE_SYMBOL && Symbol[name] || (USE_SYMBOL ? Symbol : uid)('Symbol.' + name));
-	};
-
-	$exports.store = store;
-
-/***/ },
-/* 48 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
-	var has         = __webpack_require__(31)
-	  , toObject    = __webpack_require__(49)
-	  , IE_PROTO    = __webpack_require__(41)('IE_PROTO')
-	  , ObjectProto = Object.prototype;
-
-	module.exports = Object.getPrototypeOf || function(O){
-	  O = toObject(O);
-	  if(has(O, IE_PROTO))return O[IE_PROTO];
-	  if(typeof O.constructor == 'function' && O instanceof O.constructor){
-	    return O.constructor.prototype;
-	  } return O instanceof Object ? ObjectProto : null;
-	};
-
-/***/ },
-/* 49 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 7.1.13 ToObject(argument)
-	var defined = __webpack_require__(12);
-	module.exports = function(it){
-	  return Object(defined(it));
-	};
-
-/***/ },
-/* 50 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	var $at  = __webpack_require__(51)(true);
-
-	// 21.1.3.27 String.prototype[@@iterator]()
-	__webpack_require__(13)(String, 'String', function(iterated){
-	  this._t = String(iterated); // target
-	  this._i = 0;                // next index
-	// 21.1.5.2.1 %StringIteratorPrototype%.next()
-	}, function(){
-	  var O     = this._t
-	    , index = this._i
-	    , point;
-	  if(index >= O.length)return {value: undefined, done: true};
-	  point = $at(O, index);
-	  this._i += point.length;
-	  return {value: point, done: false};
-	});
-
-/***/ },
-/* 51 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var toInteger = __webpack_require__(39)
-	  , defined   = __webpack_require__(12);
-	// true  -> String#at
-	// false -> String#codePointAt
-	module.exports = function(TO_STRING){
-	  return function(that, pos){
-	    var s = String(defined(that))
-	      , i = toInteger(pos)
-	      , l = s.length
-	      , a, b;
-	    if(i < 0 || i >= l)return TO_STRING ? '' : undefined;
-	    a = s.charCodeAt(i);
-	    return a < 0xd800 || a > 0xdbff || i + 1 === l || (b = s.charCodeAt(i + 1)) < 0xdc00 || b > 0xdfff
-	      ? TO_STRING ? s.charAt(i) : a
-	      : TO_STRING ? s.slice(i, i + 2) : (a - 0xd800 << 10) + (b - 0xdc00) + 0x10000;
-	  };
-	};
-
-/***/ },
-/* 52 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var classof   = __webpack_require__(53)
-	  , ITERATOR  = __webpack_require__(47)('iterator')
-	  , Iterators = __webpack_require__(8);
-	module.exports = __webpack_require__(17).isIterable = function(it){
-	  var O = Object(it);
-	  return O[ITERATOR] !== undefined
-	    || '@@iterator' in O
-	    || Iterators.hasOwnProperty(classof(O));
-	};
-
-/***/ },
-/* 53 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// getting tag from 19.1.3.6 Object.prototype.toString()
-	var cof = __webpack_require__(11)
-	  , TAG = __webpack_require__(47)('toStringTag')
-	  // ES3 wrong here
-	  , ARG = cof(function(){ return arguments; }()) == 'Arguments';
-
-	// fallback for IE11 Script Access Denied error
-	var tryGet = function(it, key){
-	  try {
-	    return it[key];
-	  } catch(e){ /* empty */ }
-	};
-
-	module.exports = function(it){
-	  var O, T, B;
-	  return it === undefined ? 'Undefined' : it === null ? 'Null'
-	    // @@toStringTag case
-	    : typeof (T = tryGet(O = Object(it), TAG)) == 'string' ? T
-	    // builtinTag case
-	    : ARG ? cof(O)
-	    // ES3 arguments fallback
-	    : (B = cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
-	};
-
-/***/ },
-/* 54 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(55), __esModule: true };
-
-/***/ },
-/* 55 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(4);
-	__webpack_require__(50);
-	module.exports = __webpack_require__(56);
-
-/***/ },
-/* 56 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var anObject = __webpack_require__(22)
-	  , get      = __webpack_require__(57);
-	module.exports = __webpack_require__(17).getIterator = function(it){
-	  var iterFn = get(it);
-	  if(typeof iterFn != 'function')throw TypeError(it + ' is not iterable!');
-	  return anObject(iterFn.call(it));
-	};
-
-/***/ },
-/* 57 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var classof   = __webpack_require__(53)
-	  , ITERATOR  = __webpack_require__(47)('iterator')
-	  , Iterators = __webpack_require__(8);
-	module.exports = __webpack_require__(17).getIteratorMethod = function(it){
-	  if(it != undefined)return it[ITERATOR]
-	    || it['@@iterator']
-	    || Iterators[classof(it)];
-	};
-
-/***/ },
-/* 58 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.default = undefined;
-
-	var _Board = __webpack_require__(59);
-
-	var _Board2 = _interopRequireDefault(_Board);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	let Game = class Game extends Phaser.Game {
-	    constructor(stages, config) {
-	        const width = config.width;
-	        const height = config.height;
-
-	        super(width, height, Phaser.AUTO, '', null);
-	        this.state.add('Board', _Board2.default, false);
-	        this.state.start('Board');
-	        this.stages = stages;
-	        this.config = config;
-	    }
-	};
-	exports.default = Game;
-
-/***/ },
-/* 59 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = undefined;
-
-	var _values = __webpack_require__(60);
-
-	var _values2 = _interopRequireDefault(_values);
-
-	var _slicedToArray2 = __webpack_require__(1);
-
-	var _slicedToArray3 = _interopRequireDefault(_slicedToArray2);
-
-	var _entries = __webpack_require__(65);
-
-	var _entries2 = _interopRequireDefault(_entries);
-
-	var _class;
-
-	var _masks = __webpack_require__(68);
-
-	var _masks2 = _interopRequireDefault(_masks);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	let Board = (0, _masks2.default)(_class = class Board extends Phaser.State {
-	  preload() {
-	    const game = this.game;
-
-	    game.load.image('bg', game.config.background);
-	    for (var _ref of (0, _entries2.default)(game.stages)) {
-	      var _ref2 = (0, _slicedToArray3.default)(_ref, 2);
-
-	      var name = _ref2[0];
-	      var photo = _ref2[1].photo;
-
-	      if (photo) {
-	        game.load.image(`stage_${ name }`, `data/photos/${ photo }`);
-	      }
-	      game.load.text(`text_${ name }`, `data/texts/${ name }.txt`);
-	    }
-	  }
-
-	  drawStage(name, _ref3) {
-	    var _ref3$at = (0, _slicedToArray3.default)(_ref3.at, 2);
-
-	    let x = _ref3$at[0];
-	    let y = _ref3$at[1];
-	    let photo = _ref3.photo;
-	    let crop = _ref3.crop;
-	    let mask = _ref3.mask;
-	    let scale = _ref3.scale;
-
-	    const pic = this.game.add.sprite(x, y, `stage_${ name }`);
-	    if (crop) {
-	      pic.crop(new Phaser.Rectangle(...crop));
-	    }
-	    if (scale) {
-	      var _scale = (0, _slicedToArray3.default)(scale, 2);
-
-	      x = _scale[0];
-	      y = _scale[1];
-
-	      pic.scale = { x, y };
-	    }
-	    if (mask) {
-	      this.masks[mask](pic);
-	    }
-	    pic.inputEnabled = true;
-
-	    pic.events.onInputDown.add(this.chooseStage, this);
-
-	    return pic;
-	  }
-
-	  create() {
-	    const game = this.game;
-
-	    game.add.sprite(0, 0, "bg");
-	    this.stages = {};
-
-	    for (const _ref4 of (0, _entries2.default)(game.stages)) {
-	      var _ref5 = (0, _slicedToArray3.default)(_ref4, 2);
-
-	      const name = _ref5[0];
-	      const stage = _ref5[1];
-
-	      let sprite = this.drawStage(name, stage);
-	      this.stages[name] = sprite;
-	      sprite.name = name;
-	    }
-	  }
-
-	  update() {
-	    for (let stage of (0, _values2.default)(this.stages)) {
-	      stage.updateCrop();
-	    }
-	  }
-
-	  showUnchosen() {
-	    let visible = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
-
-	    for (let stage of (0, _values2.default)(this.stages)) {
-	      if (stage !== this.chosen) stage.visible = visible;
-	    }
-	  }
-
-	  makeText(sprite) {
-	    const game = this.game;
-
-	    const content = game.cache.getText(`text_${ sprite.name }`);
-	    var _game$world = this.game.world;
-	    const centerX = _game$world.centerX;
-	    const centerY = _game$world.centerY;
-	    const x = _game$world.x;
-	    const y = _game$world.y;
-	    const width = _game$world.width;
-	    const height = _game$world.height;
-
-	    const text = game.add.text(0, 0, content);
+	var Text, out$ = typeof exports != 'undefined' && exports || this;
+	out$.Text = Text = {
+	  makeText: function(sprite){
+	    var game, content, ref$, centerX, centerY, x, y, width, height, text;
+	    game = this.game;
+	    content = game.cache.getText("text_" + sprite.name);
+	    ref$ = this.game.world, centerX = ref$.centerX, centerY = ref$.centerY, x = ref$.x, y = ref$.y, width = ref$.width, height = ref$.height;
+	    text = game.add.text(0, 0, content);
 	    text.align = 'center';
 	    text.boundsAlignH = 'center';
 	    text.boundsAlignV = 'center';
 	    text.setTextBounds(x, y, width, height);
-
 	    text.fontSize = 30;
 	    text.fill = '#ffffff';
-
 	    text.stroke = '#000000';
 	    text.strokeThickness = 10;
-
-	    sprite.text = text;
-	  }
-
-	  chooseStage(sprite) {
-	    console.log(sprite);
-	    let visible = false;
-	    if (sprite === this.chosen) {
-	      this.chosen = null;
-	      visible = true;
-	      sprite.text.destroy();
-	      sprite.maskHandler.shrink().onComplete.add(() => this.showUnchosen(true));
-	    } else {
-	      this.chosen = sprite;
-	      this.showUnchosen(false);
-	      sprite.maskHandler.enlarge().onComplete.add(() => this.makeText(sprite));
-	    }
-	  }
-	}) || _class;
-
-	exports.default = Board;
-
-/***/ },
-/* 60 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(61), __esModule: true };
-
-/***/ },
-/* 61 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(62);
-	module.exports = __webpack_require__(17).Object.values;
-
-/***/ },
-/* 62 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// https://github.com/tc39/proposal-object-values-entries
-	var $export = __webpack_require__(15)
-	  , $values = __webpack_require__(63)(false);
-
-	$export($export.S, 'Object', {
-	  values: function values(it){
-	    return $values(it);
-	  }
-	});
-
-/***/ },
-/* 63 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var getKeys   = __webpack_require__(35)
-	  , toIObject = __webpack_require__(9)
-	  , isEnum    = __webpack_require__(64).f;
-	module.exports = function(isEntries){
-	  return function(it){
-	    var O      = toIObject(it)
-	      , keys   = getKeys(O)
-	      , length = keys.length
-	      , i      = 0
-	      , result = []
-	      , key;
-	    while(length > i)if(isEnum.call(O, key = keys[i++])){
-	      result.push(isEntries ? [key, O[key]] : O[key]);
-	    } return result;
-	  };
-	};
-
-/***/ },
-/* 64 */
-/***/ function(module, exports) {
-
-	exports.f = {}.propertyIsEnumerable;
-
-/***/ },
-/* 65 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(66), __esModule: true };
-
-/***/ },
-/* 66 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(67);
-	module.exports = __webpack_require__(17).Object.entries;
-
-/***/ },
-/* 67 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// https://github.com/tc39/proposal-object-values-entries
-	var $export  = __webpack_require__(15)
-	  , $entries = __webpack_require__(63)(true);
-
-	$export($export.S, 'Object', {
-	  entries: function entries(it){
-	    return $entries(it);
-	  }
-	});
-
-/***/ },
-/* 68 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _slicedToArray2 = __webpack_require__(1);
-
-	var _slicedToArray3 = _interopRequireDefault(_slicedToArray2);
-
-	var _entries = __webpack_require__(65);
-
-	var _entries2 = _interopRequireDefault(_entries);
-
-	var _assign = __webpack_require__(69);
-
-	var _assign2 = _interopRequireDefault(_assign);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	let MaskImpl = class MaskImpl {
-	  constructor(state, sprite) {
-	    this.state = state;
-	    this.sprite = sprite;
-	    sprite.maskHandler = this;
-
-	    let x = sprite.x;
-	    let y = sprite.y;
-	    let w = sprite.width;
-	    let h = sprite.height;
-
-	    this.pos = { x, y, w, h };
-	    this.crop = (0, _assign2.default)({}, sprite.cropRect);
-
-	    this.mask = this.makeMask();
-	    this.scale = (0, _assign2.default)({}, this.sprite.scale);
-	    this.sprite.mask = this.mask;
-	  }
-
-	  get game() {
-	    return this.state.game;
-	  }
-
-	  tween(obj, to, start) {
-	    return this.game.add.tween(obj).to(to, ...this.tweenParams(start));
-	  }
-
-	  enlarge() {
-	    let start = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
-
-	    console.log(this.sprite._crop);
-	    var _game = this.game;
-	    const width = _game.width;
-	    const height = _game.height;
-
-
-	    this.sprite.mask = null;
-	    this.mask.visible = false;
-	    const tween = this.tween(this.sprite.cropRect, { x: 0, y: 0, width, height }, start);
-	    tween.onStart.add(() => this.tween(this.sprite, { x: 0, y: 0 }, start));
-	    tween.onStart.add(() => this.tween(this.sprite.scale, { x: 1, y: 1 }, start));
-	    return tween;
-	  }
-
-	  shrink() {
-	    let start = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
-
-	    const rest = [1000, "Linear", true];
-	    var _pos = this.pos;
-	    const x = _pos.x;
-	    const y = _pos.y;
-	    const w = _pos.w;
-	    const h = _pos.h;
-
-
-	    const tween = this.tween(this.sprite, { x, y }, start);
-	    tween.onStart.add(() => this.tween(this.sprite.cropRect, this.crop, start));
-	    tween.onStart.add(() => this.tween(this.sprite.scale, this.scale, start));
-	    tween.onComplete.add(() => {
-	      this.sprite.mask = this.mask;
-	      this.mask.visible = true;
-	    });
-	    return tween;
-	  }
-
-	  tweenParams(autoStart) {
-	    return [1000, "Linear", autoStart];
+	    return sprite.text = text;
 	  }
 	};
-	let circle = class circle extends MaskImpl {
-	  makeMask() {
-	    const mask = this.game.add.graphics(0, 0);
-	    var _sprite = this.sprite;
-	    const x = _sprite.x;
-	    const y = _sprite.y;
-	    const width = _sprite.width;
-	    const height = _sprite.height;
-	    const scale = _sprite.scale;
+	//# sourceMappingURL=C:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\text.ls.map
 
-	    const w = width * scale.x;
-	    const h = height * scale.y;
-	    mask.beginFill(0xffffff);
-	    this.ellipse = mask.drawEllipse(x + w / 2, y + h / 2, w / 2, h / 2);
-	    return mask;
-	  }
-	};
-
-
-	const maskImpls = { circle };
-
-	function makeMasks(state) {
-	  const masks = {};
-	  for (var _ref of (0, _entries2.default)(maskImpls)) {
-	    var _ref2 = (0, _slicedToArray3.default)(_ref, 2);
-
-	    var name = _ref2[0];
-	    var maker = _ref2[1];
-
-	    masks[name] = sprite => new maker(state, sprite);
-	  }
-	  return masks;
-	}
-
-	let Masks = cls => {
-	  return class extends cls {
-	    constructor() {
-	      var _temp;
-
-	      return _temp = super(...arguments), this.masks = makeMasks(this), _temp;
-	    }
-
-	  };
-	};
-
-	exports.default = Masks;
-
-/***/ },
-/* 69 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(70), __esModule: true };
-
-/***/ },
-/* 70 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(71);
-	module.exports = __webpack_require__(17).Object.assign;
-
-/***/ },
-/* 71 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 19.1.3.1 Object.assign(target, source)
-	var $export = __webpack_require__(15);
-
-	$export($export.S + $export.F, 'Object', {assign: __webpack_require__(72)});
-
-/***/ },
-/* 72 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	// 19.1.2.1 Object.assign(target, source, ...)
-	var getKeys  = __webpack_require__(35)
-	  , gOPS     = __webpack_require__(73)
-	  , pIE      = __webpack_require__(64)
-	  , toObject = __webpack_require__(49)
-	  , IObject  = __webpack_require__(10)
-	  , $assign  = Object.assign;
-
-	// should work with symbols and should have deterministic property order (V8 bug)
-	module.exports = !$assign || __webpack_require__(26)(function(){
-	  var A = {}
-	    , B = {}
-	    , S = Symbol()
-	    , K = 'abcdefghijklmnopqrst';
-	  A[S] = 7;
-	  K.split('').forEach(function(k){ B[k] = k; });
-	  return $assign({}, A)[S] != 7 || Object.keys($assign({}, B)).join('') != K;
-	}) ? function assign(target, source){ // eslint-disable-line no-unused-vars
-	  var T     = toObject(target)
-	    , aLen  = arguments.length
-	    , index = 1
-	    , getSymbols = gOPS.f
-	    , isEnum     = pIE.f;
-	  while(aLen > index){
-	    var S      = IObject(arguments[index++])
-	      , keys   = getSymbols ? getKeys(S).concat(getSymbols(S)) : getKeys(S)
-	      , length = keys.length
-	      , j      = 0
-	      , key;
-	    while(length > j)if(isEnum.call(S, key = keys[j++]))T[key] = S[key];
-	  } return T;
-	} : $assign;
-
-/***/ },
-/* 73 */
-/***/ function(module, exports) {
-
-	exports.f = Object.getOwnPropertySymbols;
 
 /***/ }
 /******/ ]);
