@@ -259,31 +259,31 @@
 	    return (ref$ = this.game.add.tween(obj)).to.apply(ref$, [to].concat(slice$.call(this.tweenParams(start))));
 	  };
 	  MaskImpl.prototype.enlarge = function(start){
-	    var ref$, width, height, tween, this$ = this;
+	    var ref$, width, height, x$, this$ = this;
 	    start == null && (start = true);
 	    console.log(this.sprite._crop);
 	    ref$ = this.game, width = ref$.width, height = ref$.height;
 	    this.sprite.mask = null;
 	    this.mask.visible = false;
-	    tween = this.tween(this.sprite.cropRect, {
+	    x$ = this.tween(this.sprite.cropRect, {
 	      x: 0,
 	      y: 0,
 	      width: width,
 	      height: height
 	    }, start);
-	    tween.onStart.add(function(){
+	    x$.onStart.add(function(){
 	      return this$.tween(this$.sprite, {
 	        x: 0,
 	        y: 0
 	      }, start);
 	    });
-	    tween.onStart.add(function(){
+	    x$.onStart.add(function(){
 	      return this$.tween(this$.sprite.scale, {
 	        x: 1,
 	        y: 1
 	      }, start);
 	    });
-	    return tween;
+	    return x$;
 	  };
 	  MaskImpl.prototype.shrink = function(start){
 	    var rest, ref$, x, y, w, h, tween, this$ = this;
@@ -1758,10 +1758,20 @@
 	    video = this.game.add.video(sprite.name);
 	    video.play(true);
 	    sprite = video.addToWorld(0, 0, 0, 0, scaleX, scaleY);
-	    return this.currentVideo = {
+	    this.currentVideo = {
 	      sprite: sprite,
 	      video: video
 	    };
+	  },
+	  closeVideo: function(){
+	    var ref$, sprite, video;
+	    if (this.currentVideo != null) {
+	      ref$ = this.currentVideo, sprite = ref$.sprite, video = ref$.video;
+	      video.stop();
+	      video.currentTime = 0.3;
+	      sprite.destroy();
+	      delete this.currentVideo;
+	    }
 	  }
 	};
 	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\video.ls.map
@@ -1774,17 +1784,12 @@
 	var out$ = typeof exports != 'undefined' && exports || this;
 	out$.Keyboard = {
 	  onPress: function(arg$){
-	    var key, ref$, sprite, video;
+	    var key;
 	    key = arg$.key;
 	    console.log(key);
 	    switch (key) {
 	    case 'Escape':
-	      if (this.currentVideo != null) {
-	        ref$ = this.currentVideo, sprite = ref$.sprite, video = ref$.video;
-	        video.stop();
-	        sprite.destroy();
-	        return ref$ = this.currentVideo, delete this.currentVideo, ref$;
-	      }
+	      return this.closeVideo();
 	    }
 	  }
 	};
