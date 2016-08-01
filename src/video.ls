@@ -1,7 +1,6 @@
 export Video:
-  choose-video: (sprite) !->
-    {scaleX, scaleY} = sprite.video
-    video = @game.add.video sprite.name
+  choose-video: ({name, cfg: {video: {scaleX, scaleY}}}) !->
+    video = @game.add.video name
     video.play true
     sprite = video.add-to-world 0,0,0,0,scaleX,scaleY
     @current-video = { sprite, video }
