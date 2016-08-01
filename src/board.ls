@@ -3,8 +3,9 @@ require! "prelude-ls": {sort-by, obj-to-pairs}
 require! "text.ls": {Text}
 require! "video.ls" : {Video}
 require! "keyboard.ls": {Keyboard}
+require! "download.ls": {Download}
 
-export class Board extends Phaser.State implements Text, Video, Keyboard
+export class Board extends Phaser.State implements Text, Video, Keyboard, Download
   preload: ->
     @masks = get-masks(@)
     @game.load.image 'bg' @game.cfg.background
@@ -41,6 +42,9 @@ export class Board extends Phaser.State implements Text, Video, Keyboard
           if stage.video?
             sprite.video = stage.video
             "video"
+          else if stage.download
+            sprite.download = stage.download
+            "download"
           else "text"
 
   update: ->
@@ -55,5 +59,6 @@ export class Board extends Phaser.State implements Text, Video, Keyboard
     console.log sprite
 
     switch sprite.type
-      when "text" then @chooseText sprite
-      when "video" then @chooseVideo sprite
+      when "text" then @choose-text sprite
+      when "video" then @choose-video sprite
+      when "download" then @choose-download sprite
