@@ -1,51 +1,78 @@
 {
-  "fish":{
-    "index" : 1,
-    "key" : "f",
-    "at" : [100, 300],
-    "photo":"fish.jpg",
-    "crop": [150, 250, 250, 250],
-    "mask" : "circle",
-    "scale" : [0.7, 0.7],
-    "text": "fish.txt"
-  },
-  "samovar":{
-    "index" : 3,
-    "key": "s",
-    "at" : [200, 100],
-    "photo": "samovar.jpg",
-    "crop": [370, 420, 250, 250],
-    "mask" : "circle",
-    "scale" : [0.7, 0.7],
-    "text" : "samovar.txt"
-  },
-  "cap": {
-    "index" : 2,
-    "key": "c",
-    "at" : [400, 100],
-    "photo": "yellowcap.jpg",
-    "mask": "circle",
-    "crop": [200, 350, 175, 175],
-    "scale" : [0.85, 0.85]
-  },
   "video": {
-    "index" : 4,
+    "index" : 1,
     "key": "v",
-    "at": [600, 100],
+    "at": [100, 100],
     "photo": "play-button.png",
     "scale" : [0.2, 0.2],
     "video": {
       "name": "druz.mp4",
       "scaleX": 3,
-      "scaleY" : 3
-      }
+      "scaleY" : 1
+    }
+  },
+  "viktorina":{
+    "index" : 2,
+    "key": "v",
+    "at" : [300, 100],
+    "photo": "newyear.jpg",
+    "crop": [433, 325, 70, 70],
+    "mask" : "circle",
+    "scale" : [2.0, 2.0],
+    "text" : "viktorina.txt"
+  },
+  "sosed":{
+    "index" : 3,
+    "key" : "s",
+    "at" : [500, 100],
+    "photo":"fish.jpg",
+    "crop": [150, 250, 250, 250],
+    "mask" : "circle",
+    "scale" : [0.55, 0.55],
+    "text": "sosed.txt"
+  },
+  "contact":{
+    "index" : 4,
+    "key": "с",
+    "at" : [700, 100],
+    "photo": "contact.jpg",
+    "mask": "circle",
+    "crop": [460, 320, 100, 100],
+    "scale" : [1.35, 1.35],
+    "caption": "Визуальный контакт"
+  },
+  "wat":{
+    "index" : 5,
+    "key": "w",
+    "at" : [900, 100],
+    "photo": "rubberducky.png",
+    "scale" : [0.7, 0.7]
   },
   "100k1":{
-    "index": 5,
+    "index": 6,
     "key": "1",
-    "at": [700, 300],
+    "at": [1100, 100],
     "photo": "100k1.png",
     "scale": [0.4, 0.4],
     "download": "100k1_win.pptx"
+  },
+  "dancing":{
+    "index" : 7,
+    "key": "d",
+    "at" : [100, 300],
+    "photo": "dancing.jpg",
+    "mask": "circle",
+    "crop": [597, 150, 100, 100],
+    "scale" : [1.35, 1.35],
+    "caption": "Танцевальный флэшмоб"
+  },
+  "cap": {
+    "index" : 5,
+    "key": "a",
+    "at" : [700, 400],
+    "photo": "yellowcap.jpg",
+    "mask": "circle",
+    "crop": [200, 350, 175, 175],
+    "scale" : [0, 0]
   }
 }

@@ -3,6 +3,7 @@ export Video:
     video = @game.add.video name
     video.play true
     sprite = video.add-to-world 0,0,0,0,scaleX,scaleY
+    sprite{width,height} = @game
     @current-video = { sprite, video }
 
   close-video: !->

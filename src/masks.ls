@@ -47,8 +47,8 @@ class circle extends MaskImpl
   make-mask: ->
     mask = @game.add.graphics(0 , 0)
     {x, y, width, height, scale} = @sprite
-    w = width * scale.x
-    h = height * scale.y
+    w = width
+    h = height 
     mask.beginFill(0xffffff)
     @ellipse = mask.drawEllipse(x + w / 2, y + h / 2, w / 2, h / 2)
     mask

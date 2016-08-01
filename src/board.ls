@@ -9,7 +9,7 @@ export class Board extends Phaser.State implements Text, Video, Keyboard, Downlo
   preload: ->
     @masks = get-masks(@)
     @game.load.image 'bg' @game.cfg.background
-    for name, {photo, video, text} of @game.stages
+    for name, {photo, video, text, title} of @game.stages
       if photo? then @game.load.image name, "data/photos/#{ photo }"
       if video? then @game.load.video name, "data/videos/#{ video.name }"
       if text? then  @game.load.text  name, "data/texts/#{ text }"
@@ -42,9 +42,12 @@ export class Board extends Phaser.State implements Text, Video, Keyboard, Downlo
         sprite.type =
           if config.video? then  "video"
           else if config.download? then "download"
-          else "text"
+          else if config.text? or config.caption? then "text"
+          else "nothing"
 
       @reg-key-handlers!
+      @game.scale.compatibility.no-margins = true
+      @game.scale.full-screen-scale-mode = Phaser.ScaleManager.EXACT_FIT
 
   update: ->
     for ,{sprite} of @stages

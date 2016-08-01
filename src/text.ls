@@ -1,6 +1,6 @@
 export Text =
-  make-text: ({name}: sprite) !->
-    content = @game.cache.get-text name
+  make-text: ({name, cfg: {caption}}: sprite) !->
+    content = if caption? then caption else @game.cache.get-text name
     {centerX, centerY, x, y, width, height} = @game.world
     text = @game.add.text(0, 0, content)
     text.align = 'center'
