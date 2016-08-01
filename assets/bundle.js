@@ -98,17 +98,19 @@
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getMasks, ref$, sortBy, objToPairs, Text, Video, Keyboard, Board, out$ = typeof exports != 'undefined' && exports || this;
+	var getMasks, ref$, sortBy, objToPairs, Text, Video, Keyboard, Download, Board, out$ = typeof exports != 'undefined' && exports || this;
 	getMasks = __webpack_require__(3).getMasks;
 	ref$ = __webpack_require__(4), sortBy = ref$.sortBy, objToPairs = ref$.objToPairs;
 	Text = __webpack_require__(10).Text;
 	Video = __webpack_require__(11).Video;
 	Keyboard = __webpack_require__(12).Keyboard;
+	Download = __webpack_require__(13).Download;
 	out$.Board = Board = (function(superclass){
 	  var prototype = extend$((import$(Board, superclass).displayName = 'Board', Board), superclass).prototype, constructor = Board;
 	  importAll$(prototype, arguments[1]);
 	  importAll$(prototype, arguments[2]);
 	  importAll$(prototype, arguments[3]);
+	  importAll$(prototype, arguments[4]);
 	  Board.prototype.preload = function(){
 	    var name, ref$, ref1$, photo, video, text, results$ = [];
 	    this.masks = getMasks(this);
@@ -165,7 +167,9 @@
 	      sprite = this.drawStage(name, stage);
 	      this.stages[name] = sprite;
 	      sprite.name = name;
-	      sprite.type = stage.video != null ? (sprite.video = stage.video, "video") : "text";
+	      sprite.type = stage.video != null
+	        ? (sprite.video = stage.video, "video")
+	        : stage.download ? (sprite.download = stage.download, "download") : "text";
 	    }
 	  };
 	  Board.prototype.update = function(){
@@ -194,13 +198,15 @@
 	      return this.chooseText(sprite);
 	    case "video":
 	      return this.chooseVideo(sprite);
+	    case "download":
+	      return this.chooseDownload(sprite);
 	    }
 	  };
 	  function Board(){
 	    Board.superclass.apply(this, arguments);
 	  }
 	  return Board;
-	}(Phaser.State, Text, Video, Keyboard));
+	}(Phaser.State, Text, Video, Keyboard, Download));
 	function extend$(sub, sup){
 	  function fun(){} fun.prototype = (sub.superclass = sup).prototype;
 	  (sub.prototype = new fun).constructor = sub;
@@ -1794,6 +1800,23 @@
 	  }
 	};
 	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\keyboard.ls.map
+
+
+/***/ },
+/* 13 */
+/***/ function(module, exports) {
+
+	var Download, out$ = typeof exports != 'undefined' && exports || this;
+	out$.Download = Download = {
+	  chooseDownload: function(sprite){
+	    var x$;
+	    x$ = document.createElement('a');
+	    x$.href = "data/downloads/" + sprite.download;
+	    x$.download = sprite.download;
+	    x$.click();
+	  }
+	};
+	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\download.ls.map
 
 
 /***/ }
