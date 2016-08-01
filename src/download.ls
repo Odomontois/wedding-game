@@ -1,6 +1,6 @@
 export Download =
-  choose-download: (sprite) !->
+  choose-download: ({cfg: {download}}) !->
     document.createElement \a
-      ..href = "data/downloads/#{ sprite.download }"
-      ..download = sprite.download
+      ..href = "data/downloads/#{ download }"
+      ..download = download
       ..click!

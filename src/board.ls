@@ -34,26 +34,25 @@ export class Board extends Phaser.State implements Text, Video, Keyboard, Downlo
       ord-stages = sort-by (.1.index), obj-to-pairs @game.stages
       @input.keyboard.on-down-callback = @~on-press
 
-      for [name, stage] in ord-stages
-        sprite = @draw-stage(name, stage)
-        @stages[name] = sprite
+      for [name, config] in ord-stages
+        sprite = @draw-stage(name, config)
+        @stages[name] = {sprite, config}
+        sprite.cfg = config
         sprite.name = name
         sprite.type =
-          if stage.video?
-            sprite.video = stage.video
-            "video"
-          else if stage.download
-            sprite.download = stage.download
-            "download"
+          if config.video? then  "video"
+          else if config.download? then "download"
           else "text"
 
+      @reg-key-handlers!
+
   update: ->
-    for _,stage of @stages
-      stage.update-crop!
+    for ,{sprite} of @stages
+      sprite.update-crop!
 
   show-unchosen: (visible = false)->
-    for _,stage of @stages
-      if stage != @chosen then stage.visible = visible
+    for  ,{sprite} of @stages
+      if sprite != @chosen then sprite.visible = visible
 
   chooseStage: (sprite)->
     console.log sprite

@@ -1,6 +1,7 @@
 {
   "fish":{
     "index" : 1,
+    "key" : "f",
     "at" : [100, 300],
     "photo":"fish.jpg",
     "crop": [150, 250, 250, 250],
@@ -10,6 +11,7 @@
   },
   "samovar":{
     "index" : 3,
+    "key": "s",
     "at" : [200, 100],
     "photo": "samovar.jpg",
     "crop": [370, 420, 250, 250],
@@ -19,6 +21,7 @@
   },
   "cap": {
     "index" : 2,
+    "key": "c",
     "at" : [400, 100],
     "photo": "yellowcap.jpg",
     "mask": "circle",
@@ -27,6 +30,7 @@
   },
   "video": {
     "index" : 4,
+    "key": "v",
     "at": [600, 100],
     "photo": "play-button.png",
     "scale" : [0.2, 0.2],
@@ -38,6 +42,7 @@
   },
   "100k1":{
     "index": 5,
+    "key": "1",
     "at": [700, 300],
     "photo": "100k1.png",
     "scale": [0.4, 0.4],

@@ -1,6 +1,6 @@
 export Text =
-  make-text: (sprite)->
-    content = @game.cache.get-text sprite.name
+  make-text: ({name}: sprite) !->
+    content = @game.cache.get-text name
     {centerX, centerY, x, y, width, height} = @game.world
     text = @game.add.text(0, 0, content)
     text.align = 'center'
@@ -18,11 +18,11 @@ export Text =
 
   chooseText: (sprite)->
     if sprite == @chosen
-      @chosen = null
+      delete @chosen
       visible = true
-      sprite.text.destroy()
-      sprite.maskHandler.shrink().onComplete.add  ~> @show-unchosen true
+      sprite.text.destroy!
+      sprite.mask-handler.shrink!on-complete.add  ~> @show-unchosen true
     else
       @chosen = sprite
       @showUnchosen false
-      sprite.maskHandler.enlarge().onComplete.add  ~> @make-text sprite
+      sprite.mask-handler.enlarge!on-complete.add  ~> @make-text sprite
