@@ -32,8 +32,8 @@
     "scale" : [0.2, 0.2],
     "video": {
       "name": "druz.mp4",
-      "scaleX": 3.3,
-      "scaleY" : 1.1
+      "scaleX": 3,
+      "scaleY" : 3
       }
   }
 }
