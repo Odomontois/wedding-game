@@ -57,7 +57,7 @@
 	    return console.log(def);
 	  });
 	};
-	//# sourceMappingURL=c:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\app.ls.map
+	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\app.ls.map
 
 
 /***/ },
@@ -91,38 +91,46 @@
 	  for (var key in src) if (own.call(src, key)) obj[key] = src[key];
 	  return obj;
 	}
-	//# sourceMappingURL=C:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\game.ls.map
+	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\game.ls.map
 
 
 /***/ },
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getMasks, ref$, sortBy, objToPairs, Text, Board, out$ = typeof exports != 'undefined' && exports || this;
+	var getMasks, ref$, sortBy, objToPairs, Text, Video, Keyboard, Board, out$ = typeof exports != 'undefined' && exports || this;
 	getMasks = __webpack_require__(3).getMasks;
 	ref$ = __webpack_require__(4), sortBy = ref$.sortBy, objToPairs = ref$.objToPairs;
 	Text = __webpack_require__(10).Text;
+	Video = __webpack_require__(11).Video;
+	Keyboard = __webpack_require__(12).Keyboard;
 	out$.Board = Board = (function(superclass){
 	  var prototype = extend$((import$(Board, superclass).displayName = 'Board', Board), superclass).prototype, constructor = Board;
 	  importAll$(prototype, arguments[1]);
+	  importAll$(prototype, arguments[2]);
+	  importAll$(prototype, arguments[3]);
 	  Board.prototype.preload = function(){
-	    var game, name, ref$, photo, results$ = [];
-	    game = this.game;
+	    var name, ref$, ref1$, photo, video, text, results$ = [];
 	    this.masks = getMasks(this);
-	    game.load.image('bg', game.cfg.background);
-	    for (name in ref$ = game.stages) {
-	      photo = ref$[name].photo;
+	    this.game.load.image('bg', this.game.cfg.background);
+	    for (name in ref$ = this.game.stages) {
+	      ref1$ = ref$[name], photo = ref1$.photo, video = ref1$.video, text = ref1$.text;
 	      if (photo != null) {
-	        game.load.image("stage_" + name, "data/photos/" + photo);
+	        this.game.load.image(name, "data/photos/" + photo);
 	      }
-	      results$.push(game.load.text("text_" + name, "data/texts/" + name + ".txt"));
+	      if (video != null) {
+	        this.game.load.video(name, "data/videos/" + video.name);
+	      }
+	      if (text != null) {
+	        results$.push(this.game.load.text(name, "data/texts/" + text));
+	      }
 	    }
 	    return results$;
 	  };
 	  Board.prototype.drawStage = function(name, arg$){
 	    var ref$, x, y, photo, crop, mask, scale, pic;
 	    ref$ = arg$.at, x = ref$[0], y = ref$[1], photo = arg$.photo, crop = arg$.crop, mask = arg$.mask, scale = arg$.scale;
-	    pic = this.game.add.sprite(x, y, "stage_" + name);
+	    pic = this.game.add.sprite(x, y, name);
 	    if (crop != null) {
 	      pic.crop((function(func, args, ctor) {
 	        ctor.prototype = func.prototype;
@@ -151,12 +159,13 @@
 	    ordStages = sortBy(function(it){
 	      return it[1].index;
 	    }, objToPairs(this.game.stages));
+	    this.input.keyboard.onDownCallback = bind$(this, 'onPress');
 	    for (i$ = 0, len$ = ordStages.length; i$ < len$; ++i$) {
 	      ref$ = ordStages[i$], name = ref$[0], stage = ref$[1];
 	      sprite = this.drawStage(name, stage);
 	      this.stages[name] = sprite;
 	      sprite.name = name;
-	      stage.type = stage.video != null ? (sprite.video = stage.video, "video") : "text";
+	      sprite.type = stage.video != null ? (sprite.video = stage.video, "video") : "text";
 	    }
 	  };
 	  Board.prototype.update = function(){
@@ -180,38 +189,18 @@
 	  };
 	  Board.prototype.chooseStage = function(sprite){
 	    console.log(sprite);
-	    switch (stage.type) {
+	    switch (sprite.type) {
 	    case "text":
 	      return this.chooseText(sprite);
 	    case "video":
 	      return this.chooseVideo(sprite);
 	    }
 	  };
-	  Board.prototype.chooseVideo = function(sprite){
-	    return s;
-	  };
-	  Board.prototype.chooseText = function(sprite){
-	    var visible, this$ = this;
-	    if (sprite === this.chosen) {
-	      this.chosen = null;
-	      visible = true;
-	      sprite.text.destroy();
-	      return sprite.maskHandler.shrink().onComplete.add(function(){
-	        return this$.showUnchosen(true);
-	      });
-	    } else {
-	      this.chosen = sprite;
-	      this.showUnchosen(false);
-	      return sprite.maskHandler.enlarge().onComplete.add(function(){
-	        return this$.makeText(sprite);
-	      });
-	    }
-	  };
 	  function Board(){
 	    Board.superclass.apply(this, arguments);
 	  }
 	  return Board;
-	}(Phaser.State, Text));
+	}(Phaser.State, Text, Video, Keyboard));
 	function extend$(sub, sup){
 	  function fun(){} fun.prototype = (sub.superclass = sup).prototype;
 	  (sub.prototype = new fun).constructor = sub;
@@ -227,7 +216,10 @@
 	  for (var key in src) obj[key] = src[key];
 	  return obj;
 	}
-	//# sourceMappingURL=C:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\board.ls.map
+	function bind$(obj, key, target){
+	  return function(){ return (target || obj)[key].apply(obj, arguments) };
+	}
+	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\board.ls.map
 
 
 /***/ },
@@ -374,7 +366,7 @@
 	  };
 	  return _curry();
 	}
-	//# sourceMappingURL=C:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\masks.ls.map
+	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\masks.ls.map
 
 
 /***/ },
@@ -1719,11 +1711,10 @@
 	var Text, out$ = typeof exports != 'undefined' && exports || this;
 	out$.Text = Text = {
 	  makeText: function(sprite){
-	    var game, content, ref$, centerX, centerY, x, y, width, height, text;
-	    game = this.game;
-	    content = game.cache.getText("text_" + sprite.name);
+	    var content, ref$, centerX, centerY, x, y, width, height, text;
+	    content = this.game.cache.getText(sprite.name);
 	    ref$ = this.game.world, centerX = ref$.centerX, centerY = ref$.centerY, x = ref$.x, y = ref$.y, width = ref$.width, height = ref$.height;
-	    text = game.add.text(0, 0, content);
+	    text = this.game.add.text(0, 0, content);
 	    text.align = 'center';
 	    text.boundsAlignH = 'center';
 	    text.boundsAlignV = 'center';
@@ -1733,9 +1724,71 @@
 	    text.stroke = '#000000';
 	    text.strokeThickness = 10;
 	    return sprite.text = text;
+	  },
+	  chooseText: function(sprite){
+	    var visible, this$ = this;
+	    if (sprite === this.chosen) {
+	      this.chosen = null;
+	      visible = true;
+	      sprite.text.destroy();
+	      return sprite.maskHandler.shrink().onComplete.add(function(){
+	        return this$.showUnchosen(true);
+	      });
+	    } else {
+	      this.chosen = sprite;
+	      this.showUnchosen(false);
+	      return sprite.maskHandler.enlarge().onComplete.add(function(){
+	        return this$.makeText(sprite);
+	      });
+	    }
 	  }
 	};
-	//# sourceMappingURL=C:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\text.ls.map
+	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\text.ls.map
+
+
+/***/ },
+/* 11 */
+/***/ function(module, exports) {
+
+	var out$ = typeof exports != 'undefined' && exports || this;
+	out$.Video = {
+	  chooseVideo: function(sprite){
+	    var ref$, scaleX, scaleY, video;
+	    ref$ = sprite.video, scaleX = ref$.scaleX, scaleY = ref$.scaleY;
+	    video = this.game.add.video(sprite.name);
+	    video.play(true);
+	    sprite = video.addToWorld(0, 0, 0, 0, scaleX, scaleY);
+	    return this.currentVideo = {
+	      sprite: sprite,
+	      video: video
+	    };
+	  }
+	};
+	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\video.ls.map
+
+
+/***/ },
+/* 12 */
+/***/ function(module, exports) {
+
+	var out$ = typeof exports != 'undefined' && exports || this;
+	out$.Keyboard = {
+	  onPress: function(arg$){
+	    var key, ref$, sprite, video;
+	    key = arg$.key;
+	    console.log(key);
+	    switch (key) {
+	    case 'Escape':
+	      if (this.currentVideo != null) {
+	        ref$ = this.currentVideo, sprite = ref$.sprite, video = ref$.video;
+	        video.stop();
+	        sprite.destroy();
+	        return ref$ = this.currentVideo, delete this.currentVideo, ref$;
+	      }
+	    }
+	  }
+	};
+	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\keyboard.ls.map
 
 
 /***/ }

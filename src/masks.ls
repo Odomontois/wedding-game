@@ -14,19 +14,18 @@ class MaskImpl
   game:~ -> @state.game
 
   tween: (obj, to, start) ->
-    @game.add.tween(obj).to(to, ...@tween-params(start))
+    @game.add.tween(obj).to(to, ...@tween-params start)
 
 
   enlarge: (start = true) ->
     console.log(this.sprite._crop)
-    {width, height} = this.game
+    {width, height} = @game
 
-    this.sprite.mask = null
-    this.mask.visible = false
-    tween = this.tween(this.sprite.cropRect,{x: 0, y: 0, width, height},  start)
-    tween.onStart.add ~> @tween @sprite, (x: 0, y: 0), start
-    tween.onStart.add ~> @tween @sprite.scale, (x: 1, y: 1), start
-    tween
+    @sprite.mask = null
+    @mask.visible = false
+    @tween this.sprite.cropRect, {x: 0, y: 0, width, height},  start
+      ..onStart.add ~> @tween @sprite, (x: 0, y: 0), start
+      ..onStart.add ~> @tween @sprite.scale, (x: 1, y: 1), start
 
   shrink: (start = true) ->
     rest = [1000, "Linear", true]
