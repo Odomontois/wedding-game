@@ -21,8 +21,9 @@
     "scale" : [2.0, 2.0],
     "text" : "viktorina.txt",
     "border": {
-      "width":3,
-      "color" : "0x00ffff"
+      "width":  7,
+      "color" : "0xffffff",
+      "alpha" : 0.3
     }
   },
   "sosed":{
@@ -35,8 +36,9 @@
     "scale" : [0.55, 0.55],
     "text": "sosed.txt",
     "border": {
-      "width":3,
-      "color" : "0x00ffff"
+      "width":  7,
+      "color" : "0xffffff",
+      "alpha" : 0.3
     }
   },
   "contact":{
@@ -49,8 +51,9 @@
     "scale" : [1.35, 1.35],
     "caption": "Визуальный контакт",
     "border": {
-      "width":3,
-      "color" : "0x00ffff"
+      "width":  7,
+      "color" : "0xffffff",
+      "alpha" : 0.3
     }
   },
   "wat":{
@@ -78,8 +81,9 @@
     "scale" : [1.35, 1.35],
     "caption": "Танцевальный флэшмоб",
     "border": {
-      "width":3,
-      "color" : "0x00ffff"
+      "width":  7,
+      "color" : "0xffffff",
+      "alpha" : 0.3
     }
   },
   "cap": {
@@ -91,8 +95,9 @@
     "crop": [200, 350, 175, 175],
     "scale" : [0, 0],
     "border": {
-      "width":3,
-      "color" : "0x00ffff"
+      "width":  7,
+      "color" : "0xffffff",
+      "alpha" : 0.3
     }
   }
 }

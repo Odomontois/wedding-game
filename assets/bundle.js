@@ -57,7 +57,7 @@
 	    return console.log(def);
 	  });
 	};
-	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\app.ls.map
+	//# sourceMappingURL=c:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\app.ls.map
 
 
 /***/ },
@@ -91,7 +91,7 @@
 	  for (var key in src) if (own.call(src, key)) obj[key] = src[key];
 	  return obj;
 	}
-	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\game.ls.map
+	//# sourceMappingURL=C:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\game.ls.map
 
 
 /***/ },
@@ -236,7 +236,7 @@
 	function bind$(obj, key, target){
 	  return function(){ return (target || obj)[key].apply(obj, arguments) };
 	}
-	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\board.ls.map
+	//# sourceMappingURL=C:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\board.ls.map
 
 
 /***/ },
@@ -356,14 +356,14 @@
 	    return x$;
 	  };
 	  circle.prototype.drawFrame = function(){
-	    var ref$, x, y, w, h, scale, border, bw, bc, x$;
+	    var ref$, x, y, w, h, scale, border, bw, bc, ba, x$;
 	    ref$ = this.sprite, x = ref$.x, y = ref$.y, w = ref$.width, h = ref$.height, scale = ref$.scale, border = ref$.cfg.border;
 	    if (border == null) {
 	      return;
 	    }
-	    bw = border.width, bc = border.color;
+	    bw = border.width, bc = border.color, ba = border.alpha;
 	    x$ = this.game.add.graphics(0, 0);
-	    x$.lineStyle(bw, bc);
+	    x$.lineStyle(bw, bc, ba);
 	    x$.drawEllipse(x + w / 2, y + h / 2, w / 2, h / 2);
 	    return x$;
 	  };
@@ -414,7 +414,7 @@
 	  };
 	  return _curry();
 	}
-	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\masks.ls.map
+	//# sourceMappingURL=C:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\masks.ls.map
 
 
 /***/ },
@@ -1794,7 +1794,7 @@
 	    }
 	  }
 	};
-	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\text.ls.map
+	//# sourceMappingURL=C:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\text.ls.map
 
 
 /***/ },
@@ -1826,7 +1826,7 @@
 	    }
 	  }
 	};
-	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\video.ls.map
+	//# sourceMappingURL=C:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\video.ls.map
 
 
 /***/ },
@@ -1866,7 +1866,7 @@
 	    this.keyHandlers = res$;
 	  }
 	};
-	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\keyboard.ls.map
+	//# sourceMappingURL=C:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\keyboard.ls.map
 
 
 /***/ },
@@ -1884,7 +1884,7 @@
 	    x$.click();
 	  }
 	};
-	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\download.ls.map
+	//# sourceMappingURL=C:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\download.ls.map
 
 
 /***/ }

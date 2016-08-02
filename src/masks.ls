@@ -64,9 +64,9 @@ class circle extends MaskImpl
   draw-frame: ->
     {x, y, width: w, height: h, scale, cfg: {border}} = @sprite
     return unless border?
-    {width: bw, color: bc} = border
+    {width: bw, color: bc, alpha: ba} = border
     @game.add.graphics 0 0
-      ..line-style bw, bc
+      ..line-style bw, bc, ba
       ..draw-ellipse(x + w / 2, y + h / 2, w/ 2 , h/ 2 )
 
 
