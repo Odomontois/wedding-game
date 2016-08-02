@@ -3,26 +3,23 @@ MaskSub =
   draw-frame: ->
 
 class MaskImpl implements MaskSub
-  (@state, @sprite) ->
-    sprite.mask-handler = this
+  ({@game}, @sprite) ->
+    sprite.mask-handler = @
 
     {x,y, width : w, height : h} = sprite
     @pos = {x,y,w,h}
-    @crop = {} <<< sprite.cropRect
+    @crop = {} <<< sprite.crop-rect
     @init-frame = true
     @mask = @make-mask!
     @frame = @draw-frame!
-    @scale = {} <<< this.sprite.scale
+    @scale = {} <<< @sprite.scale
     @sprite.mask = @mask
-
-  game:~ -> @state.game
 
   update: !->
     @sprite.update-crop!
 
   tween: (obj, to, start) ->
     @game.add.tween(obj).to(to, ...@tween-params start)
-
 
   enlarge: (start = true) ->
     console.log(this.sprite._crop)
@@ -48,6 +45,12 @@ class MaskImpl implements MaskSub
         @mask.visible = true
         @frame?visible = true
 
+  show: (visible)->
+    if visible
+      @frame?visible = true
+    else
+      @frame?visible = false
+
 
   tween-params: (autoStart) -> [1000, "Linear", autoStart]
 
@@ -65,8 +68,6 @@ class circle extends MaskImpl
     @game.add.graphics 0 0
       ..line-style bw, bc
       ..draw-ellipse(x + w / 2, y + h / 2, w/ 2 , h/ 2 )
-
-
 
 
 mask-impls = {circle}

@@ -56,7 +56,9 @@ export class Board extends Phaser.State implements Text, Video, Keyboard, Downlo
 
   show-unchosen: (visible = false)->
     for  ,{sprite} of @stages
-      if sprite != @chosen then sprite.visible = visible
+      if sprite != @chosen
+        sprite.visible = visible
+        sprite.mask-handler?show visible
 
   chooseStage: (sprite)->
     console.log sprite
