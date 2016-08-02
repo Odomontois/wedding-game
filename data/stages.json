@@ -1,13 +1,13 @@
 {
   "video": {
     "index" : 1,
-    "key": "v",
+    "key": "z",
     "at": [100, 100],
     "photo": "play-button.png",
     "scale" : [0.2, 0.2],
     "video": {
       "name": "druz.mp4",
-      "scaleX": 3,
+      "scaleX": 1,
       "scaleY" : 1
     }
   },
@@ -19,7 +19,11 @@
     "crop": [433, 325, 70, 70],
     "mask" : "circle",
     "scale" : [2.0, 2.0],
-    "text" : "viktorina.txt"
+    "text" : "viktorina.txt",
+    "border": {
+      "width":5,
+      "color" : "0x00ffff"
+    }
   },
   "sosed":{
     "index" : 3,

@@ -2,3 +2,4 @@ node_modules
 .jsout
 .commit
 mongoose-free-6.5.exe
+*.zip
