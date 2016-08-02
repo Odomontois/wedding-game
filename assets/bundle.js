@@ -278,21 +278,14 @@
 	    enumerable: true
 	  });
 	  MaskImpl.prototype.update = function(){
-	    var ref$;
 	    this.sprite.updateCrop();
-	    if (this.initFrame) {
-	      delete this.initFrame;
-	      if ((ref$ = this.frame) != null) {
-	        ref$.visible = true;
-	      }
-	    }
 	  };
 	  MaskImpl.prototype.tween = function(obj, to, start){
 	    var ref$;
 	    return (ref$ = this.game.add.tween(obj)).to.apply(ref$, [to].concat(slice$.call(this.tweenParams(start))));
 	  };
 	  MaskImpl.prototype.enlarge = function(start){
-	    var ref$, width, height, x$, this$ = this;
+	    var ref$, width, height, newSize, x$, this$ = this;
 	    start == null && (start = true);
 	    console.log(this.sprite._crop);
 	    ref$ = this.game, width = ref$.width, height = ref$.height;
@@ -301,12 +294,13 @@
 	    if ((ref$ = this.frame) != null) {
 	      ref$.visible = false;
 	    }
-	    x$ = this.tween(this.sprite.cropRect, {
+	    newSize = {
 	      x: 0,
 	      y: 0,
 	      width: width,
 	      height: height
-	    }, start);
+	    };
+	    x$ = this.tween(this.sprite.cropRect, newSize, start);
 	    x$.onStart.add(function(){
 	      return this$.tween(this$.sprite, {
 	        x: 0,
@@ -352,13 +346,12 @@
 	circle = (function(superclass){
 	  var prototype = extend$((import$(circle, superclass).displayName = 'circle', circle), superclass).prototype, constructor = circle;
 	  circle.prototype.makeMask = function(){
-	    var mask, ref$, x, y, w, h, scale;
-	    mask = this.game.add.graphics(0, 0);
-	    ref$ = this.sprite, x = ref$.x, y = ref$.y, w = ref$.width, h = ref$.height, scale = ref$.scale;
-	    mask.beginFill(0xffffff);
-	    this.ellipse = mask.drawEllipse(x + w / 2, y + h / 2, w / 2, h / 2);
-	    this.drawFrame();
-	    return mask;
+	    var ref$, x, y, w, h, x$;
+	    ref$ = this.sprite, x = ref$.x, y = ref$.y, w = ref$.width, h = ref$.height;
+	    x$ = this.game.add.graphics(0, 0);
+	    x$.beginFill(0xffffff);
+	    x$.drawEllipse(x + w / 2, y + h / 2, w / 2, h / 2);
+	    return x$;
 	  };
 	  circle.prototype.drawFrame = function(){
 	    var ref$, x, y, w, h, scale, border, bw, bc, x$;
@@ -370,7 +363,6 @@
 	    x$ = this.game.add.graphics(0, 0);
 	    x$.lineStyle(bw, bc);
 	    x$.drawEllipse(x + w / 2, y + h / 2, w / 2, h / 2);
-	    x$.visible = false;
 	    return x$;
 	  };
 	  function circle(){

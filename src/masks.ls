@@ -19,10 +19,6 @@ class MaskImpl implements MaskSub
 
   update: !->
     @sprite.update-crop!
-    if @init-frame
-      delete @init-frame
-      @frame?visible = true
-
 
   tween: (obj, to, start) ->
     @game.add.tween(obj).to(to, ...@tween-params start)
@@ -35,7 +31,8 @@ class MaskImpl implements MaskSub
     @sprite.mask = null
     @mask.visible = false
     @frame?visible = false
-    @tween this.sprite.cropRect, {x: 0, y: 0, width, height},  start
+    new-size = {x: 0, y: 0, width, height}
+    @tween this.sprite.cropRect, new-size,  start
       ..onStart.add ~> @tween @sprite, (x: 0, y: 0), start
       ..onStart.add ~> @tween @sprite.scale, (x: 1, y: 1), start
 
@@ -56,12 +53,10 @@ class MaskImpl implements MaskSub
 
 class circle extends MaskImpl
   make-mask: ->
-    mask = @game.add.graphics 0 0
-    {x, y, width: w, height: h, scale} = @sprite
-    mask.beginFill(0xffffff)
-    @ellipse = mask.draw-ellipse(x + w / 2, y + h / 2, w / 2, h / 2)
-    @draw-frame!
-    mask
+    {x, y, width: w, height: h} = @sprite
+    @game.add.graphics 0 0
+      ..beginFill(0xffffff)
+      ..draw-ellipse(x + w / 2, y + h / 2, w / 2, h / 2)
 
   draw-frame: ->
     {x, y, width: w, height: h, scale, cfg: {border}} = @sprite
@@ -70,7 +65,6 @@ class circle extends MaskImpl
     @game.add.graphics 0 0
       ..line-style bw, bc
       ..draw-ellipse(x + w / 2, y + h / 2, w/ 2 , h/ 2 )
-      ..visible = false
 
 
 
