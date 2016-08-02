@@ -14,19 +14,20 @@ export class Board extends Phaser.State implements Text, Video, Keyboard, Downlo
       if video? then @game.load.video name, "data/videos/#{ video.name }"
       if text? then  @game.load.text  name, "data/texts/#{ text }"
 
-  drawStage: (name, {at: [x,y] ,photo, crop, mask, scale}) ->
-    pic = @game.add.sprite x,y, name
-    if crop? then pic.crop new Phaser.Rectangle ...crop
+  drawStage: (name, {at: [x,y] ,photo, crop, mask, scale}:cfg) ->
+    sprite = @game.add.sprite x,y, name
+    sprite <<< {cfg}
+    if crop? then sprite.crop new Phaser.Rectangle ...crop
 
     if scale?
       [x,y] = scale
-      pic.scale = {x,y}
+      sprite.scale = {x,y}
 
-    if mask? then  @masks[mask](pic)
+    if mask? then  @masks[mask](sprite)
 
-    pic.input-enabled = true
-    pic.events.on-input-down.add @chooseStage, @
-    pic
+    sprite.input-enabled = true
+    sprite.events.on-input-down.add @chooseStage, @
+    sprite
 
   create: !->
       @game.add.sprite 0 0 "bg"
@@ -37,8 +38,8 @@ export class Board extends Phaser.State implements Text, Video, Keyboard, Downlo
       for [name, config] in ord-stages
         sprite = @draw-stage(name, config)
         @stages[name] = {sprite, config}
-        sprite.cfg = config
-        sprite.name = name
+
+        sprite <<< {name}
         sprite.type =
           if config.video? then  "video"
           else if config.download? then "download"

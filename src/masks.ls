@@ -1,4 +1,8 @@
-class MaskImpl
+MaskSub =
+  make-mask: ->
+  draw-frame: ->
+
+class MaskImpl implements MaskSub
   (@state, @sprite) ->
     sprite.maskHandler = this
 
@@ -6,7 +10,8 @@ class MaskImpl
     @pos = {x,y,w,h}
     @crop = {} <<< sprite.cropRect
 
-    @mask = @makeMask()
+    @mask = @make-mask!
+    @frame = @draw-frame!
     @scale = {} <<< this.sprite.scale
     @sprite.mask = @mask
 
@@ -16,13 +21,13 @@ class MaskImpl
   tween: (obj, to, start) ->
     @game.add.tween(obj).to(to, ...@tween-params start)
 
-
   enlarge: (start = true) ->
     console.log(this.sprite._crop)
     {width, height} = @game
 
     @sprite.mask = null
     @mask.visible = false
+    @frame?visible = false
     @tween this.sprite.cropRect, {x: 0, y: 0, width, height},  start
       ..onStart.add ~> @tween @sprite, (x: 0, y: 0), start
       ..onStart.add ~> @tween @sprite.scale, (x: 1, y: 1), start
@@ -37,6 +42,7 @@ class MaskImpl
     tween.onComplete.add ~>
       @sprite.mask = @mask
       @mask.visible = true
+      @frame?visible = true
 
     tween
 
@@ -45,13 +51,22 @@ class MaskImpl
 
 class circle extends MaskImpl
   make-mask: ->
-    mask = @game.add.graphics(0 , 0)
-    {x, y, width, height, scale} = @sprite
-    w = width
-    h = height 
+    mask = @game.add.graphics 0 0
+    {x, y, width: w, height: h, scale} = @sprite
     mask.beginFill(0xffffff)
-    @ellipse = mask.drawEllipse(x + w / 2, y + h / 2, w / 2, h / 2)
+    @ellipse = mask.draw-ellipse(x + w / 2, y + h / 2, w / 2, h / 2)
+    @draw-frame!
     mask
+  draw-frame: ->
+    {x, y, width: w, height: h, scale, cfg: {border}} = @sprite
+    return unless border?
+    {width: bw, color: bc} = border
+    frame = @game.add.graphics 0 0
+    frame.line-style bw, bc
+    frame.draw-ellipse(x + w / 2, y + h / 2, w/ 2 , h/ 2 )
+
+
+
 
 mask-impls = {circle}
 mask-maker = (state, maker, sprite) --> new maker(state, sprite)
