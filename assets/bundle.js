@@ -182,12 +182,13 @@
 	    this.game.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
 	  };
 	  Board.prototype.update = function(){
-	    var i$, ref$, sprite, results$ = [];
+	    var i$, ref$, maskHandler;
 	    for (i$ in ref$ = this.stages) {
-	      sprite = ref$[i$].sprite;
-	      results$.push(sprite.updateCrop());
+	      maskHandler = ref$[i$].sprite.maskHandler;
+	      if (maskHandler != null) {
+	        maskHandler.update();
+	      }
 	    }
-	    return results$;
 	  };
 	  Board.prototype.showUnchosen = function(visible){
 	    var i$, ref$, sprite, results$ = [];
@@ -263,6 +264,7 @@
 	      h: h
 	    };
 	    this.crop = import$({}, sprite.cropRect);
+	    this.initFrame = true;
 	    this.mask = this.makeMask();
 	    this.frame = this.drawFrame();
 	    this.scale = import$({}, this.sprite.scale);
@@ -275,6 +277,16 @@
 	    configurable: true,
 	    enumerable: true
 	  });
+	  MaskImpl.prototype.update = function(){
+	    var ref$;
+	    this.sprite.updateCrop();
+	    if (this.initFrame) {
+	      delete this.initFrame;
+	      if ((ref$ = this.frame) != null) {
+	        ref$.visible = true;
+	      }
+	    }
+	  };
 	  MaskImpl.prototype.tween = function(obj, to, start){
 	    var ref$;
 	    return (ref$ = this.game.add.tween(obj)).to.apply(ref$, [to].concat(slice$.call(this.tweenParams(start))));
@@ -310,27 +322,27 @@
 	    return x$;
 	  };
 	  MaskImpl.prototype.shrink = function(start){
-	    var rest, ref$, x, y, w, h, tween, this$ = this;
+	    var rest, ref$, x, y, w, h, x$, this$ = this;
 	    start == null && (start = true);
 	    rest = [1000, "Linear", true];
 	    ref$ = this.pos, x = ref$.x, y = ref$.y, w = ref$.w, h = ref$.h;
-	    tween = this.tween(this.sprite, {
+	    x$ = this.tween(this.sprite, {
 	      x: x,
 	      y: y
 	    }, start);
-	    tween.onStart.add(function(){
+	    x$.onStart.add(function(){
 	      return this$.tween(this$.sprite.cropRect, this$.crop, start);
 	    });
-	    tween.onStart.add(function(){
+	    x$.onStart.add(function(){
 	      return this$.tween(this$.sprite.scale, this$.scale, start);
 	    });
-	    tween.onComplete.add(function(){
+	    x$.onComplete.add(function(){
 	      var ref$;
 	      this$.sprite.mask = this$.mask;
 	      this$.mask.visible = true;
 	      return (ref$ = this$.frame) != null ? ref$.visible = true : void 8;
 	    });
-	    return tween;
+	    return x$;
 	  };
 	  MaskImpl.prototype.tweenParams = function(autoStart){
 	    return [1000, "Linear", autoStart];
@@ -349,15 +361,17 @@
 	    return mask;
 	  };
 	  circle.prototype.drawFrame = function(){
-	    var ref$, x, y, w, h, scale, border, bw, bc, frame;
+	    var ref$, x, y, w, h, scale, border, bw, bc, x$;
 	    ref$ = this.sprite, x = ref$.x, y = ref$.y, w = ref$.width, h = ref$.height, scale = ref$.scale, border = ref$.cfg.border;
 	    if (border == null) {
 	      return;
 	    }
 	    bw = border.width, bc = border.color;
-	    frame = this.game.add.graphics(0, 0);
-	    frame.lineStyle(bw, bc);
-	    return frame.drawEllipse(x + w / 2, y + h / 2, w / 2, h / 2);
+	    x$ = this.game.add.graphics(0, 0);
+	    x$.lineStyle(bw, bc);
+	    x$.drawEllipse(x + w / 2, y + h / 2, w / 2, h / 2);
+	    x$.visible = false;
+	    return x$;
 	  };
 	  function circle(){
 	    circle.superclass.apply(this, arguments);

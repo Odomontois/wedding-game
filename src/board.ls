@@ -50,9 +50,9 @@ export class Board extends Phaser.State implements Text, Video, Keyboard, Downlo
       @game.scale.compatibility.no-margins = true
       @game.scale.full-screen-scale-mode = Phaser.ScaleManager.EXACT_FIT
 
-  update: ->
-    for ,{sprite} of @stages
-      sprite.update-crop!
+  update: !->
+    for ,{sprite: {mask-handler}} of @stages
+      mask-handler?update!
 
   show-unchosen: (visible = false)->
     for  ,{sprite} of @stages
