@@ -2,7 +2,7 @@
   "video": {
     "index" : 1,
     "key": "z",
-    "at": [100, 100],
+    "at": [100, 75],
     "photo": "play-button.png",
     "scale" : [0.2, 0.2],
     "video": {
@@ -14,7 +14,7 @@
   "viktorina":{
     "index" : 2,
     "key": "v",
-    "at" : [300, 100],
+    "at" : [300, 75],
     "photo": "new-year.jpg",
     "crop": [433, 325, 70, 70],
     "mask" : "circle",
@@ -29,7 +29,7 @@
   "sosed":{
     "index" : 3,
     "key" : "s",
-    "at" : [500, 100],
+    "at" : [500, 75],
     "photo":"fish.jpg",
     "crop": [150, 250, 250, 250],
     "mask" : "circle",
@@ -44,7 +44,7 @@
   "contact":{
     "index" : 4,
     "key": "с",
-    "at" : [700, 100],
+    "at" : [700, 75],
     "photo": "eye-contact.jpg",
     "mask": "circle",
     "crop": [460, 320, 100, 100],
@@ -59,14 +59,14 @@
   "wat":{
     "index" : 5,
     "key": "w",
-    "at" : [900, 100],
+    "at" : [900, 75],
     "photo": "rubberducky.png",
     "scale" : [0.7, 0.7]
   },
   "100k1":{
     "index": 6,
     "key": "1",
-    "at": [1100, 100],
+    "at": [1100, 75],
     "photo": "100k1.png",
     "scale": [0.4, 0.4],
     "download": "100k1_win.pptx"
@@ -74,7 +74,7 @@
   "dancing":{
     "index" : 7,
     "key": "d",
-    "at" : [100, 300],
+    "at" : [400, 250],
     "photo": "dancing.jpg",
     "mask": "circle",
     "crop": [597, 150, 100, 100],
@@ -86,18 +86,26 @@
       "alpha" : 0.3
     }
   },
-  "cap": {
-    "index" : 5,
-    "key": "a",
-    "at" : [700, 400],
-    "photo": "yellowcap.jpg",
+  "sovmultifilm": {
+    "index" : 8,
+    "key": "m",
+    "at" : [600, 250],
+    "photo": "darkkatya.jpg",
     "mask": "circle",
-    "crop": [200, 350, 175, 175],
-    "scale" : [0, 0],
+    "crop": [230, 30, 300, 300],
+    "scale" : [0.45, 0.45],
     "border": {
       "width":  7,
       "color" : "0xffffff",
       "alpha" : 0.3
-    }
+    },
+    "caption": "Викторина \"Советские мультфимы\""
+  },
+  "dancing-kit": {
+    "index" : 9,
+    "key": "k",
+    "at" : [800, 250],
+    "photo": "lego-elvis.png",
+    "scale" : [0.6, 0.6]
   }
 }
