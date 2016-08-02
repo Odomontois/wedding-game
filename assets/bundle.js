@@ -191,12 +191,13 @@
 	    }
 	  };
 	  Board.prototype.showUnchosen = function(visible){
-	    var i$, ref$, sprite, results$ = [];
+	    var i$, ref$, sprite, ref1$, results$ = [];
 	    visible == null && (visible = false);
 	    for (i$ in ref$ = this.stages) {
 	      sprite = ref$[i$].sprite;
 	      if (sprite !== this.chosen) {
-	        results$.push(sprite.visible = visible);
+	        sprite.visible = visible;
+	        results$.push((ref1$ = sprite.maskHandler) != null ? ref1$.show(visible) : void 8);
 	      }
 	    }
 	    return results$;
@@ -251,9 +252,9 @@
 	  MaskImpl.displayName = 'MaskImpl';
 	  var prototype = MaskImpl.prototype, constructor = MaskImpl;
 	  importAll$(prototype, arguments[0]);
-	  function MaskImpl(state, sprite){
+	  function MaskImpl(arg$, sprite){
 	    var x, y, w, h;
-	    this.state = state;
+	    this.game = arg$.game;
 	    this.sprite = sprite;
 	    sprite.maskHandler = this;
 	    x = sprite.x, y = sprite.y, w = sprite.width, h = sprite.height;
@@ -270,13 +271,6 @@
 	    this.scale = import$({}, this.sprite.scale);
 	    this.sprite.mask = this.mask;
 	  }
-	  Object.defineProperty(MaskImpl.prototype, 'game', {
-	    get: function(){
-	      return this.state.game;
-	    },
-	    configurable: true,
-	    enumerable: true
-	  });
 	  MaskImpl.prototype.update = function(){
 	    this.sprite.updateCrop();
 	  };
@@ -337,6 +331,14 @@
 	      return (ref$ = this$.frame) != null ? ref$.visible = true : void 8;
 	    });
 	    return x$;
+	  };
+	  MaskImpl.prototype.show = function(visible){
+	    var ref$, ref1$;
+	    if (visible) {
+	      return (ref$ = this.frame) != null ? ref$.visible = true : void 8;
+	    } else {
+	      return (ref1$ = this.frame) != null ? ref1$.visible = false : void 8;
+	    }
 	  };
 	  MaskImpl.prototype.tweenParams = function(autoStart){
 	    return [1000, "Linear", autoStart];
