@@ -57,7 +57,7 @@
 	    return console.log(def);
 	  });
 	};
-	//# sourceMappingURL=c:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\app.ls.map
+	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\app.ls.map
 
 
 /***/ },
@@ -91,7 +91,7 @@
 	  for (var key in src) if (own.call(src, key)) obj[key] = src[key];
 	  return obj;
 	}
-	//# sourceMappingURL=C:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\game.ls.map
+	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\game.ls.map
 
 
 /***/ },
@@ -129,12 +129,13 @@
 	    }
 	    return results$;
 	  };
-	  Board.prototype.drawStage = function(name, arg$){
-	    var ref$, x, y, photo, crop, mask, scale, pic;
-	    ref$ = arg$.at, x = ref$[0], y = ref$[1], photo = arg$.photo, crop = arg$.crop, mask = arg$.mask, scale = arg$.scale;
-	    pic = this.game.add.sprite(x, y, name);
+	  Board.prototype.drawStage = function(name, cfg){
+	    var ref$, x, y, photo, crop, mask, scale, sprite;
+	    ref$ = cfg.at, x = ref$[0], y = ref$[1], photo = cfg.photo, crop = cfg.crop, mask = cfg.mask, scale = cfg.scale;
+	    sprite = this.game.add.sprite(x, y, name);
+	    sprite.cfg = cfg;
 	    if (crop != null) {
-	      pic.crop((function(func, args, ctor) {
+	      sprite.crop((function(func, args, ctor) {
 	        ctor.prototype = func.prototype;
 	        var child = new ctor, result = func.apply(child, args), t;
 	        return (t = typeof result)  == "object" || t == "function" ? result || child : child;
@@ -142,17 +143,17 @@
 	    }
 	    if (scale != null) {
 	      x = scale[0], y = scale[1];
-	      pic.scale = {
+	      sprite.scale = {
 	        x: x,
 	        y: y
 	      };
 	    }
 	    if (mask != null) {
-	      this.masks[mask](pic);
+	      this.masks[mask](sprite);
 	    }
-	    pic.inputEnabled = true;
-	    pic.events.onInputDown.add(this.chooseStage, this);
-	    return pic;
+	    sprite.inputEnabled = true;
+	    sprite.events.onInputDown.add(this.chooseStage, this);
+	    return sprite;
 	  };
 	  Board.prototype.create = function(){
 	    var ordStages, i$, len$, ref$, name, config, sprite, this$ = this;
@@ -169,7 +170,6 @@
 	        sprite: sprite,
 	        config: config
 	      };
-	      sprite.cfg = config;
 	      sprite.name = name;
 	      sprite.type = config.video != null
 	        ? "video"
@@ -234,17 +234,22 @@
 	function bind$(obj, key, target){
 	  return function(){ return (target || obj)[key].apply(obj, arguments) };
 	}
-	//# sourceMappingURL=C:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\board.ls.map
+	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\board.ls.map
 
 
 /***/ },
 /* 3 */
 /***/ function(module, exports) {
 
-	var MaskImpl, circle, maskImpls, maskMaker, getMasks, slice$ = [].slice, out$ = typeof exports != 'undefined' && exports || this;
+	var MaskSub, MaskImpl, circle, maskImpls, maskMaker, getMasks, slice$ = [].slice, out$ = typeof exports != 'undefined' && exports || this;
+	MaskSub = {
+	  makeMask: function(){},
+	  drawFrame: function(){}
+	};
 	MaskImpl = (function(){
 	  MaskImpl.displayName = 'MaskImpl';
 	  var prototype = MaskImpl.prototype, constructor = MaskImpl;
+	  importAll$(prototype, arguments[0]);
 	  function MaskImpl(state, sprite){
 	    var x, y, w, h;
 	    this.state = state;
@@ -259,6 +264,7 @@
 	    };
 	    this.crop = import$({}, sprite.cropRect);
 	    this.mask = this.makeMask();
+	    this.frame = this.drawFrame();
 	    this.scale = import$({}, this.sprite.scale);
 	    this.sprite.mask = this.mask;
 	  }
@@ -280,6 +286,9 @@
 	    ref$ = this.game, width = ref$.width, height = ref$.height;
 	    this.sprite.mask = null;
 	    this.mask.visible = false;
+	    if ((ref$ = this.frame) != null) {
+	      ref$.visible = false;
+	    }
 	    x$ = this.tween(this.sprite.cropRect, {
 	      x: 0,
 	      y: 0,
@@ -316,8 +325,10 @@
 	      return this$.tween(this$.sprite.scale, this$.scale, start);
 	    });
 	    tween.onComplete.add(function(){
+	      var ref$;
 	      this$.sprite.mask = this$.mask;
-	      return this$.mask.visible = true;
+	      this$.mask.visible = true;
+	      return (ref$ = this$.frame) != null ? ref$.visible = true : void 8;
 	    });
 	    return tween;
 	  };
@@ -325,18 +336,28 @@
 	    return [1000, "Linear", autoStart];
 	  };
 	  return MaskImpl;
-	}());
+	}(MaskSub));
 	circle = (function(superclass){
 	  var prototype = extend$((import$(circle, superclass).displayName = 'circle', circle), superclass).prototype, constructor = circle;
 	  circle.prototype.makeMask = function(){
-	    var mask, ref$, x, y, width, height, scale, w, h;
+	    var mask, ref$, x, y, w, h, scale;
 	    mask = this.game.add.graphics(0, 0);
-	    ref$ = this.sprite, x = ref$.x, y = ref$.y, width = ref$.width, height = ref$.height, scale = ref$.scale;
-	    w = width;
-	    h = height;
+	    ref$ = this.sprite, x = ref$.x, y = ref$.y, w = ref$.width, h = ref$.height, scale = ref$.scale;
 	    mask.beginFill(0xffffff);
 	    this.ellipse = mask.drawEllipse(x + w / 2, y + h / 2, w / 2, h / 2);
+	    this.drawFrame();
 	    return mask;
+	  };
+	  circle.prototype.drawFrame = function(){
+	    var ref$, x, y, w, h, scale, border, bw, bc, frame;
+	    ref$ = this.sprite, x = ref$.x, y = ref$.y, w = ref$.width, h = ref$.height, scale = ref$.scale, border = ref$.cfg.border;
+	    if (border == null) {
+	      return;
+	    }
+	    bw = border.width, bc = border.color;
+	    frame = this.game.add.graphics(0, 0);
+	    frame.lineStyle(bw, bc);
+	    return frame.drawEllipse(x + w / 2, y + h / 2, w / 2, h / 2);
 	  };
 	  function circle(){
 	    circle.superclass.apply(this, arguments);
@@ -357,6 +378,10 @@
 	  }
 	  return resultObj$;
 	};
+	function importAll$(obj, src){
+	  for (var key in src) obj[key] = src[key];
+	  return obj;
+	}
 	function import$(obj, src){
 	  var own = {}.hasOwnProperty;
 	  for (var key in src) if (own.call(src, key)) obj[key] = src[key];
@@ -381,7 +406,7 @@
 	  };
 	  return _curry();
 	}
-	//# sourceMappingURL=C:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\masks.ls.map
+	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\masks.ls.map
 
 
 /***/ },
@@ -1761,7 +1786,7 @@
 	    }
 	  }
 	};
-	//# sourceMappingURL=C:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\text.ls.map
+	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\text.ls.map
 
 
 /***/ },
@@ -1793,7 +1818,7 @@
 	    }
 	  }
 	};
-	//# sourceMappingURL=C:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\video.ls.map
+	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\video.ls.map
 
 
 /***/ },
@@ -1833,7 +1858,7 @@
 	    this.keyHandlers = res$;
 	  }
 	};
-	//# sourceMappingURL=C:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\keyboard.ls.map
+	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\keyboard.ls.map
 
 
 /***/ },
@@ -1851,7 +1876,7 @@
 	    x$.click();
 	  }
 	};
-	//# sourceMappingURL=C:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!C:\prog\projects\pure\js\wedding-game\src\download.ls.map
+	//# sourceMappingURL=D:\prog\projects\pure\js\wedding-game\node_modules\livescript-loader\index.js!D:\prog\projects\pure\js\wedding-game\src\download.ls.map
 
 
 /***/ }
